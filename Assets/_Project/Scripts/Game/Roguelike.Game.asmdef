@@ -1,0 +1,16 @@
+{
+    "name": "Roguelike.Game",
+    "rootNamespace": "",
+    "references": [
+        "GUID:ebca3a03207552d07bd54e2875acaa16"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
