@@ -2,7 +2,8 @@
     "name": "Roguelike.Game",
     "rootNamespace": "",
     "references": [
-        "GUID:ebca3a03207552d07bd54e2875acaa16"
+        "GUID:ebca3a03207552d07bd54e2875acaa16",
+        "GUID:75469ad4d38634e559750d17036d5f7c"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
