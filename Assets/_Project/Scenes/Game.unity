@@ -259,6 +259,7 @@ GameObject:
   - component: {fileID: 519420029}
   - component: {fileID: 519420030}
   - component: {fileID: 519420033}
+  - component: {fileID: 519420034}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -328,7 +329,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0, g: 0.08071279, b: 0.20754719, a: 0}
+  m_BackGroundColor: {r: 0.15128474, g: 0, b: 0.254717, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -353,7 +354,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 10
+  orthographic size: 13.8125
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -408,6 +409,20 @@ MonoBehaviour:
   m_CropFrameX: 0
   m_CropFrameY: 0
   m_StretchFill: 0
+--- !u!114 &519420034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3fa8eaa15d8899539f11f0053cd365d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Roguelike.Game::Roguelike.Game.CameraFollow
+  camera: {fileID: 519420031}
+  smooth_time: 0.12
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0
@@ -445,7 +460,7 @@ MonoBehaviour:
   m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
-  m_ApplyToSortingLayers: 00000000
+  m_ApplyToSortingLayers: 00000000536f16ee31f85956c1bac440533b9624fbcfb3d7
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -580,6 +595,8 @@ GameObject:
   - component: {fileID: 1312745206}
   - component: {fileID: 1312745208}
   - component: {fileID: 1312745207}
+  - component: {fileID: 1312745210}
+  - component: {fileID: 1312745209}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -615,7 +632,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Roguelike.Game::Roguelike.Game.GameManager
   map_renderer: {fileID: 1312745208}
-  camera: {fileID: 519420031}
+  turn_manager: {fileID: 1312745210}
+  input_reader: {fileID: 1312745209}
+  camera_follow: {fileID: 519420034}
+  entity_root: {fileID: 901493468}
+  player_prefab: {fileID: 4059082981582859210, guid: 82811bb49715fac8384e7edee19733c4, type: 3}
   generation_settings:
     width: 80
     height: 60
@@ -626,7 +647,7 @@ MonoBehaviour:
     walk_length: 25
     minimum_room_fill: 0.45
     corridor_width: 3
-  seed: 0
+  seed: 12345
 --- !u!114 &1312745208
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -641,8 +662,42 @@ MonoBehaviour:
   m_EditorClassIdentifier: Roguelike.Game::Roguelike.Game.MapRenderer
   floor_tilemap: {fileID: 207995474}
   wall_tilemap: {fileID: 1679853949}
-  floor_tile: {fileID: 11400000, guid: da1c3d155a0b2a75883201871caedee7, type: 2}
-  wall_tile: {fileID: 11400000, guid: 5a129600534ff9b1dae5f4d4f540b040, type: 2}
+  floor_tile: {fileID: -9117575232103309013, guid: 473274793ef4a469c990c57775bde22d, type: 3}
+  wall_face_tile: {fileID: -1330872518813287030, guid: 473274793ef4a469c990c57775bde22d, type: 3}
+  wall_side_left_tile: {fileID: 3046689750722271092, guid: 473274793ef4a469c990c57775bde22d, type: 3}
+  wall_side_right_tile: {fileID: 6475520934772787262, guid: 473274793ef4a469c990c57775bde22d, type: 3}
+  wall_corner_UL: {fileID: -1897933715978691468, guid: 473274793ef4a469c990c57775bde22d, type: 3}
+  wall_corner_DL: {fileID: 3883530543461294288, guid: 473274793ef4a469c990c57775bde22d, type: 3}
+  wall_corner_DR: {fileID: -739555169192982383, guid: 473274793ef4a469c990c57775bde22d, type: 3}
+  wall_corner_UR: {fileID: 9131882094864480131, guid: 473274793ef4a469c990c57775bde22d, type: 3}
+  wall_top_tile: {fileID: -8503294424828333436, guid: 473274793ef4a469c990c57775bde22d, type: 3}
+--- !u!114 &1312745209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1312745205}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f512c68ea91b312d83609937dd0beb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Roguelike.Game::Roguelike.Game.PlayerInputReader
+  repeat_delay: 0.25
+  repeat_interval: 0.11
+--- !u!114 &1312745210
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1312745205}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f53f8b218114a9e30badf5ea2dd6fe07, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Roguelike.Game::Roguelike.Game.TurnManager
+  step_duration: 0.12
 --- !u!1 &1679853946
 GameObject:
   m_ObjectHideFlags: 0

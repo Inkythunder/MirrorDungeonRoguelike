@@ -1,6 +1,5 @@
 using Roguelike.Core;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 
 namespace Roguelike.Game
@@ -10,7 +9,14 @@ namespace Roguelike.Game
         [SerializeField] Tilemap floor_tilemap;
         [SerializeField] Tilemap wall_tilemap;
         [SerializeField] TileBase floor_tile;
-        [SerializeField] TileBase wall_tile;
+        [SerializeField] TileBase wall_face_tile;
+        [SerializeField] TileBase wall_side_left_tile;
+        [SerializeField] TileBase wall_side_right_tile;
+        [SerializeField] TileBase wall_corner_UL;
+        [SerializeField] TileBase wall_corner_DL;
+        [SerializeField] TileBase wall_corner_DR;
+        [SerializeField] TileBase wall_corner_UR;
+        [SerializeField] TileBase wall_top_tile;
 
         public void Render(DungeonMap map)
         {
@@ -33,7 +39,7 @@ namespace Roguelike.Game
                     }
                     else if (HasFloorNeighbour(map, position))
                     {
-                        wallTiles[index] = wall_tile;
+                        wallTiles[index] = PickWallTile(map, position);
                     }
                 }
             }
@@ -56,6 +62,37 @@ namespace Roguelike.Game
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Chooses which wall sprite a solid cell uses.
+        /// </summary>
+        /// <param name="map"></param>
+        /// <param name="position"></param>
+        /// <returns></returns>
+        TileBase PickWallTile(DungeonMap map, Vector2Int position)
+        {
+            if (map[position + Direction.Up] == TileType.Wall &&
+                map[position + Direction.Down] == TileType.Wall &&
+                map[position + Direction.Left] == TileType.Floor &&
+                map[position + Direction.Right] == TileType.Wall) return wall_side_left_tile;
+            
+            if (map[position + Direction.Up] == TileType.Wall &&
+                map[position + Direction.Down] == TileType.Wall &&
+                map[position + Direction.Left] == TileType.Wall &&
+                map[position + Direction.Right] == TileType.Floor) return wall_side_right_tile;
+            
+            if (map[position + Direction.Up] == TileType.Floor &&
+                map[position + Direction.Down] == TileType.Wall &&
+                map[position + Direction.Left] == TileType.Floor &&
+                map[position + Direction.Right] == TileType.Wall) return wall_corner_DR;
+            
+            if (map[position + Direction.Up] == TileType.Floor &&
+                map[position + Direction.Down] == TileType.Wall &&
+                map[position + Direction.Left] == TileType.Wall &&
+                map[position + Direction.Right] == TileType.Floor) return wall_corner_DL;
+            
+            return wall_face_tile;
         }
         
         public void Clear()

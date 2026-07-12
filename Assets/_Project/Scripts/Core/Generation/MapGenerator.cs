@@ -1,7 +1,5 @@
 using System.Collections.Generic;
-using log4net.Core;
 using UnityEngine;
-using UnityEngine.AdaptivePerformance;
 
 namespace Roguelike.Core
 {
@@ -19,7 +17,7 @@ namespace Roguelike.Core
             };
 
             // Partition the given space.
-            var area = new RectInt(1, 1, settings.width - 1, settings.height - 2);
+            var area = new RectInt(1, 1, settings.width - 2, settings.height - 2);
             level.bsp_root = BspPartitioner.Partition(
                 area, 
                 settings.minimum_partition_size, 
@@ -216,6 +214,24 @@ namespace Roguelike.Core
             }
             
             level.stairs_position = farthest_room.centre;
+        }
+
+        public static EntityState CreatePlayer(LevelData level)
+        {
+            var player = new EntityState
+            {
+                name = "Player 1",
+                faction = Faction.Player,
+                position = level.player_spawn,
+                max_hp = 20,
+                hp = 20,
+                attack = 4,
+                defence = 1
+            };
+            
+            level.AddEntity(player);
+            level.player = player;
+            return player;
         }
     }
 }
