@@ -663,13 +663,15 @@ MonoBehaviour:
   floor_tilemap: {fileID: 207995474}
   wall_tilemap: {fileID: 1679853949}
   floor_tile: {fileID: -9117575232103309013, guid: 473274793ef4a469c990c57775bde22d, type: 3}
-  wall_face_tile: {fileID: -1330872518813287030, guid: 473274793ef4a469c990c57775bde22d, type: 3}
-  wall_side_left_tile: {fileID: 3046689750722271092, guid: 473274793ef4a469c990c57775bde22d, type: 3}
-  wall_side_right_tile: {fileID: 6475520934772787262, guid: 473274793ef4a469c990c57775bde22d, type: 3}
+  wall_face: {fileID: -1330872518813287030, guid: 473274793ef4a469c990c57775bde22d, type: 3}
+  wall_side_left: {fileID: 3046689750722271092, guid: 473274793ef4a469c990c57775bde22d, type: 3}
+  wall_side_right: {fileID: 6475520934772787262, guid: 473274793ef4a469c990c57775bde22d, type: 3}
   wall_corner_UL: {fileID: -1897933715978691468, guid: 473274793ef4a469c990c57775bde22d, type: 3}
   wall_corner_DL: {fileID: 3883530543461294288, guid: 473274793ef4a469c990c57775bde22d, type: 3}
   wall_corner_DR: {fileID: -739555169192982383, guid: 473274793ef4a469c990c57775bde22d, type: 3}
   wall_corner_UR: {fileID: 9131882094864480131, guid: 473274793ef4a469c990c57775bde22d, type: 3}
+  wall_corner_DL_out: {fileID: 2003133509652890361, guid: 473274793ef4a469c990c57775bde22d, type: 3}
+  wall_corner_DR_out: {fileID: -3328759046033886890, guid: 473274793ef4a469c990c57775bde22d, type: 3}
   wall_top_tile: {fileID: -8503294424828333436, guid: 473274793ef4a469c990c57775bde22d, type: 3}
 --- !u!114 &1312745209
 MonoBehaviour:

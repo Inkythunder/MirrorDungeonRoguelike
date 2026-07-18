@@ -5156,7 +5156,7 @@ TextureImporter:
       name: wall_side_right_1
       rect:
         serializedVersion: 2
-        x: 0
+        x: 48
         y: 344
         width: 16
         height: 16
@@ -5178,7 +5178,7 @@ TextureImporter:
       name: wall_side_left_1
       rect:
         serializedVersion: 2
-        x: 16
+        x: 32
         y: 344
         width: 16
         height: 16
@@ -11774,6 +11774,50 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: wall_corner_UR_out
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 332
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 46f723b281b8217a88c2685b5f5bad1d
+      internalID: -1908201487
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wall_corner_UL_out
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 332
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5f93ba9639532da5da0b4bed313c5cad
+      internalID: 2098544120
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
@@ -12412,12 +12456,12 @@ TextureImporter:
       undead_thug_6: 1562974697901453862
       undead_thug_7: -8419048281255591650
       undead_thug_8: 7409363467076437380
-      wall_corner_: 3324285157292081454
-      wall_corner_D: 1869052409
       wall_corner_DL: 8037599416302373913
       wall_corner_DR: 7621647303431958183
       wall_corner_UL: -5791763582271254071
+      wall_corner_UL_out: 2098544120
       wall_corner_UR: -5126078540136010858
+      wall_corner_UR_out: -1908201487
       wall_face_1: 6580896328393768807
       wall_side_left_1: 1245178166109667642
       wall_side_right_1: 7806442600868206582
