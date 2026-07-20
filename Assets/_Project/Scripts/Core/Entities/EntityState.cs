@@ -15,6 +15,9 @@ namespace Roguelike.Core
         public int defence = 0;
 
         public bool IsAlive => hp > 0;
+
+        public EnemyBehaviour behaviour = EnemyBehaviour.Wanderer;
+        public int aggro_range = 8;
     }
 }
 

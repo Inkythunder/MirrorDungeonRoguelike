@@ -329,7 +329,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.15128474, g: 0, b: 0.254717, a: 0}
+  m_BackGroundColor: {r: 0.13333334, g: 0.13333334, b: 0.13333334, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -663,16 +663,54 @@ MonoBehaviour:
   floor_tilemap: {fileID: 207995474}
   wall_tilemap: {fileID: 1679853949}
   floor_tile: {fileID: -9117575232103309013, guid: 473274793ef4a469c990c57775bde22d, type: 3}
-  wall_face: {fileID: -1330872518813287030, guid: 473274793ef4a469c990c57775bde22d, type: 3}
-  wall_side_left: {fileID: 3046689750722271092, guid: 473274793ef4a469c990c57775bde22d, type: 3}
-  wall_side_right: {fileID: 6475520934772787262, guid: 473274793ef4a469c990c57775bde22d, type: 3}
-  wall_corner_UL: {fileID: -1897933715978691468, guid: 473274793ef4a469c990c57775bde22d, type: 3}
-  wall_corner_DL: {fileID: 3883530543461294288, guid: 473274793ef4a469c990c57775bde22d, type: 3}
-  wall_corner_DR: {fileID: -739555169192982383, guid: 473274793ef4a469c990c57775bde22d, type: 3}
-  wall_corner_UR: {fileID: 9131882094864480131, guid: 473274793ef4a469c990c57775bde22d, type: 3}
-  wall_corner_DL_out: {fileID: 2003133509652890361, guid: 473274793ef4a469c990c57775bde22d, type: 3}
-  wall_corner_DR_out: {fileID: -3328759046033886890, guid: 473274793ef4a469c990c57775bde22d, type: 3}
-  wall_top_tile: {fileID: -8503294424828333436, guid: 473274793ef4a469c990c57775bde22d, type: 3}
+  wall_sprites:
+  - {fileID: 8345469980999613816, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: 3362381519624638613, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: 7888892384546221405, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: 744843434, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: 642947867, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: 1345322999, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: -425815759, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: 337185263, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: -510315326, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: 1393425887, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: -187704869, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: 1135806111, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: 1924858447, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: 1946768271, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: 1608681641, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: 1074060693, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: -312189812, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: -522781640, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: -365243917, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: -1572328732, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: -1850066197, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: -621585771, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: -1992368711, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: 1862399592, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: 189244234, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: 1876165615, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: -931097837, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: 1108206182, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: -1654532569, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: 957308457, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: -2042698285, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: -481300038, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: -874355166, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: 1187159938, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: -1164082085, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: -241219126, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: -97716264, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: -683743897, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: 571417707, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: -701449709, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: 1118238322, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: -2082070749, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: 570610451, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: 533317073, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: -111646172, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: 1532260282, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
+  - {fileID: -135205365, guid: 7605c12c4da9fddc1bd257043f37c261, type: 3}
 --- !u!114 &1312745209
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -685,7 +723,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f512c68ea91b312d83609937dd0beb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Roguelike.Game::Roguelike.Game.PlayerInputReader
-  repeat_delay: 0.25
+  repeat_delay: 0.11
   repeat_interval: 0.11
 --- !u!114 &1312745210
 MonoBehaviour:

@@ -1,4 +1,3 @@
-using System;
 using Roguelike.Core;
 using UnityEngine;
 
@@ -9,20 +8,26 @@ namespace Roguelike.Game
         [SerializeField] SpriteRenderer sprite_renderer;
         [SerializeField] float move_speed = 14f;
         
-        public EntityState State { get; private set; }
+        public EntityState state { get; private set; }
 
         public void Bind(EntityState state)
         {
-            State = state;
+            this.state = state;
             transform.position = CellToWorld(state.position);
             UpdateSortingOrder();
         }
 
         public void Update()
         {
-            if (State == null) return;
+            if (state == null) return;
 
-            Vector3 target = CellToWorld(State.position);
+            if (!state.IsAlive)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            Vector3 target = CellToWorld(state.position);
             transform.position = Vector3.MoveTowards(
                 transform.position, target, move_speed * Time.deltaTime
             );
@@ -37,10 +42,18 @@ namespace Roguelike.Game
         {
             if (sprite_renderer != null)
             {
-                sprite_renderer.sortingOrder = -(State.position.y);
+                sprite_renderer.sortingOrder = -(state.position.y);
             }
         }
 
-        public static Vector3 CellToWorld(Vector2Int cell) => new Vector3(cell.x + 0.5f, cell.y, 0f);
+        public static Vector3 CellToWorld(Vector2Int cell) => new Vector3(cell.x + 0.5f, cell.y + +0.5f, 0f);
+
+        public void SetSprite(Sprite sprite)
+        {
+            if (sprite_renderer != null && sprite != null)
+            {
+                sprite_renderer.sprite = sprite;
+            }
+        }
     }
 }
