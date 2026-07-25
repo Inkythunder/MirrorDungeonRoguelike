@@ -51,10 +51,12 @@ namespace Roguelike.Game
                 {
                     int index = y * map.width + x;
                     var position = new Vector2Int(x, y);
-
-                    if (map[position] == TileType.Floor) 
-                        floor_tiles[index] = floor_tile;
-                    else 
+                    
+                    // Floor covers the entire map.
+                    // This allows floor to cover wall-to-wall and avoid gaps on vertical walls.
+                    floor_tiles[index] = floor_tile;
+                    
+                    if (map[position] != TileType.Floor)
                         wall_tiles[index] = PickWallTile(map, position);
                 }
             }
@@ -85,8 +87,6 @@ namespace Roguelike.Game
             if (IsWall(-1, -1) && (wall_neighbours & (S | W)) == (S | W)) wall_neighbours |= SW;
             if (IsWall(-1, 1) && (wall_neighbours & (N | W)) == (N | W)) wall_neighbours |= NW;
 
-            Debug.Log(wall_neighbours);
-            Debug.Log("Dict key: " + SpriteForShape[wall_neighbours]);
             return wall_tiles_by_index[SpriteForShape[wall_neighbours]];
         }
         

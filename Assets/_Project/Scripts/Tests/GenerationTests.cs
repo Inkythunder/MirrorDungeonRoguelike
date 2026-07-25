@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using Roguelike.Core;
 using UnityEngine;
+using UnityEngine.LightTransport.PostProcessing;
 
 namespace Roguelike.Tests
 {
@@ -144,6 +145,25 @@ namespace Roguelike.Tests
                 {
                     Assert.AreEqual(TileType.Wall, map[new Vector2Int(0, y)]);
                     Assert.AreEqual(TileType.Wall, map[new Vector2Int(map.width - 1, y)]);
+                }
+            }
+        }
+
+        [Test]
+        public void CarvedRoomTilesStayInsideTheirRoom()
+        {
+            var settings = new GenerationSettings();
+
+            for (int seed = 1; seed <= 100; seed++)
+            {
+                LevelData level = MapGenerator.Generate(settings, seed, 1);
+
+                foreach (Room room in level.rooms)
+                {
+                    foreach (Vector2Int tile in room.floor_tiles)
+                    {
+                        Assert.IsTrue(room.bounds.Contains(tile), $"Seed {seed}: tile {tile} is outside {room.bounds}.");
+                    }
                 }
             }
         }

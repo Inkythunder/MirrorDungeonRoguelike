@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace Roguelike.Core
 {
     /// <summary>
@@ -7,7 +9,9 @@ namespace Roguelike.Core
     {
         public static ActionResult Resolve(EntityState attacker, EntityState defender, LevelData level)
         {
-            int damage = attacker.attack - defender.defence;
+            // Prevents negative damage which would heal the attacker if the target's
+            // defence value was higher than the attacker's attack value.
+            int damage = Mathf.Max(0, attacker.attack - defender.defence);
 
             defender.hp -= damage;
             level.Log($"{attacker.name} hits {defender.name} for {damage}");

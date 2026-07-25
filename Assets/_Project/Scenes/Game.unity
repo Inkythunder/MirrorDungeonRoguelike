@@ -637,6 +637,10 @@ MonoBehaviour:
   camera_follow: {fileID: 519420034}
   entity_root: {fileID: 901493468}
   player_prefab: {fileID: 4059082981582859210, guid: 82811bb49715fac8384e7edee19733c4, type: 3}
+  enemy_prefab: {fileID: 236119947203250963, guid: 45c24f37e5a47132685f0402c3f1ed3a, type: 3}
+  enemy_definitions:
+  - {fileID: 11400000, guid: ec879ae9e79626c389f38645799e89f3, type: 2}
+  - {fileID: 11400000, guid: 360b56f7cd4469e8e81827e9ebf486e1, type: 2}
   generation_settings:
     width: 80
     height: 60
@@ -647,6 +651,10 @@ MonoBehaviour:
     walk_length: 25
     minimum_room_fill: 0.45
     corridor_width: 3
+  difficulty_settings:
+    base_enemy_count: 5
+    enemies_per_depth: 1
+    minimum_spawn_distance_from_player: 12
   seed: 12345
 --- !u!114 &1312745208
 MonoBehaviour:

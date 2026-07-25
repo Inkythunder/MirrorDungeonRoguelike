@@ -21,7 +21,7 @@ namespace Roguelike.Core
         (RectInt room, int iterations, int walk_length, float minimum_fill, Rng rng)
         {
             var floor = new HashSet<Vector2Int>();
-            var start = new Vector2Int(room.xMin + room.width / 2, room.yMin + room.height);
+            var start = new Vector2Int(room.xMin + room.width / 2, room.yMin + room.height / 2);
 
             floor.Add(start);
 

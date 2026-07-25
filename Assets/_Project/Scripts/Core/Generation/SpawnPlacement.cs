@@ -31,6 +31,9 @@ namespace Roguelike.Core
             var chosen = new List<Vector2Int>();
             for (int i = 0; i < count; i++)
             {
+                // If 0, there are no legal tiles to spawn on.
+                if (candidates.Count == 0) break;
+                
                 int index = rng.Range(0, candidates.Count);
                 chosen.Add(candidates[index]);
                 candidates.RemoveAt(index);

@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d22312fa54fa15a8bb5f73144607674f, type: 3}
   m_Name: undead_thug
   m_EditorClassIdentifier: Roguelike.Game::Roguelike.Core.EnemyDefinition
-  display_name: lil guy
-  sprite: {fileID: 0}
-  behaviour: 0
-  max_hp: 6
-  attack: 2
+  display_name: undead thug
+  sprite: {fileID: 439784721614238294, guid: 4fafba7fc3dcc8212b111c5bf829c001, type: 3}
+  behaviour: 1
+  max_hp: 7
+  attack: 3
   defence: 0
-  aggro_range: 8
+  aggro_range: 9
   minimum_depth: 1
