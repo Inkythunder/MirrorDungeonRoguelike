@@ -16,6 +16,15 @@ namespace Roguelike.Core
         {
             return base_enemy_count + enemies_per_depth * (depth - 1);
         }
+
+        [Tooltip("Items placed on each level.")]
+        public int base_item_count = 4;
+        public int items_per_depth = 0;
+
+        public int item_count_for_depth(int depth)
+        {
+            return base_item_count + items_per_depth * (depth - 1);
+        }
     }
     
 }

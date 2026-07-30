@@ -52,10 +52,6 @@ namespace Roguelike.Core
         /// <summary>
         /// Carves an L shaped corridor. Randomly chooses to dig the X or Y axis first fully then digs the other.
         /// </summary>
-        /// <param name="source"></param>
-        /// <param name="destination"></param>
-        /// <param name="corridor"></param>
-        /// <param name="rng"></param>
         static void CarveCorridor(
             Vector2Int source, Vector2Int destination, HashSet<Vector2Int> corridor, Rng rng)
         {

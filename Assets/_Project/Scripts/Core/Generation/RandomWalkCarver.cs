@@ -11,11 +11,6 @@ namespace Roguelike.Core
         /// Fewer iterations and longer walk_length creates longer, narrower caves.
         /// More iterations and shorter walk_length creates rounder shaped caves.
         /// </summary>
-        /// <param name="room"></param>
-        /// <param name="iterations"></param>
-        /// <param name="walk_length"></param>
-        /// <param name="minimum_fill"></param>
-        /// <param name="rng"></param>
         /// <returns></returns>
         public static HashSet<Vector2Int> Carve
         (RectInt room, int iterations, int walk_length, float minimum_fill, Rng rng)

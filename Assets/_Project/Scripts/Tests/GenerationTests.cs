@@ -167,5 +167,43 @@ namespace Roguelike.Tests
                 }
             }
         }
+
+        [Test]
+        public void DepthsDifferButStayDeterministic()
+        {
+            var settings = new GenerationSettings();
+
+            LevelData depth1 = MapGenerator.Generate(settings, 123, 1);
+            LevelData depth2 = MapGenerator.Generate(settings, 123, 2);
+            LevelData depth2_again = MapGenerator.Generate(settings, 123, 2);
+            
+            CollectionAssert.AreEqual(depth2.map.FloorTiles(), depth2_again.map.FloorTiles(),
+                "Same seed and depth must produce identical maps");
+            CollectionAssert.AreNotEqual(depth1.map.FloorTiles(), depth2.map.FloorTiles(),
+                "Depth 2 produced depth 1's layout - depth isn't reaching Rng.");
+        }
+
+        [Test]
+        public void StairsAreAlwaysReachableFromSpawn()
+        {
+            var settings = new GenerationSettings();
+            for (int seed = 1; seed <= 200; seed++)
+            {
+                LevelData level = MapGenerator.Generate(settings, seed, 1);
+                Assert.IsTrue(level.map.ReachableFrom(level.player_spawn).Contains(level.stairs_position),
+                    $"Seed {seed}: stairs are inaccessible from spawn.");
+            }
+        }
+
+        [Test]
+        public void SpawnPlacementSurvivesRunningOutOfTiles()
+        {
+            LevelData level = MapGenerator.Generate(new GenerationSettings(), 7, 1);
+
+            List<Vector2Int> tiles = SpawnPlacement.ChooseTiles(level, 10_000, 0, new Rng(7));
+            
+            Assert.LessOrEqual(tiles.Count, level.map.FloorTiles().Count,
+                "Asking for too many tiles should return fewer, not throw.");
+        }
     }    
 }

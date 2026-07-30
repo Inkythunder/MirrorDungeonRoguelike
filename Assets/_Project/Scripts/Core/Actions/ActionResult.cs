@@ -10,6 +10,7 @@ namespace Roguelike.Core
         Moved,
         Attacked,
         Waited,
+        Drank,
         Pushed
     }
 }

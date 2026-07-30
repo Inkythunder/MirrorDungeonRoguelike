@@ -17,9 +17,12 @@ namespace Roguelike.Game
         [Header("Prefabs")]
         [SerializeField] EntityView player_prefab;
         [SerializeField] EntityView enemy_prefab;
+        [SerializeField] SpriteRenderer stairs_prefab;
+        [SerializeField] SpriteRenderer item_prefab;
         
         [Header("Data")]
         [SerializeField] EnemyDefinition[] enemy_definitions;
+        [SerializeField] ItemDefinition[] item_definitions;
         
         [Header("Tuning")]
         [SerializeField] GenerationSettings generation_settings = new GenerationSettings();
@@ -30,13 +33,14 @@ namespace Roguelike.Game
         
         public LevelData level { get; private set; }
         
-        readonly List<EntityView> entity_views = new List<EntityView>();
-        private bool game_over;
-        private int last_seed;
+        public bool game_over { get; private set; }
+        int run_seed;
+        private readonly Dictionary<Vector2Int, GameObject> item_views = 
+            new Dictionary<Vector2Int, GameObject>();
 
         void Start()
         {
-            GenerateLevel(seed != 0 ? seed : NewSeed());
+            StartNewRun(seed != 0 ? seed : NewSeed());
         }
 
         void Update()
@@ -48,14 +52,14 @@ namespace Roguelike.Game
             {
                 if (keyboard.rKey.wasPressedThisFrame)
                 {
-                    GenerateLevel(NewSeed());
+                    StartNewRun(NewSeed());
                     return;
                 }
             }
             
             if (keyboard != null && Keyboard.current.f5Key.wasPressedThisFrame)
             {
-                GenerateLevel(NewSeed());
+                StartNewRun(NewSeed());
                 return;
             }
             HandlePlayerInput();
@@ -74,28 +78,63 @@ namespace Roguelike.Game
             if (input_reader.TryGetDirection(out Vector2Int direction))
             {
                 turn_manager.SubmitPlayerAction(new MoveOrAttackAction(level.player, direction));
+                return;
+            }
+
+            if (input_reader.PotionRequested())
+            {
+                turn_manager.SubmitPlayerAction(new DrinkPotionAction(level.player));
+                return;
+            }
+
+            if (input_reader.InteractRequested())
+            {
+                if (level.player.position == level.stairs_position)
+                {
+                    Descend();
+                }
+                else
+                {
+                    // For when the player tries to press [E] while not standing over stairs
+                    level.Log("There are no stairs here.");
+                }
             }
         }
 
-        // ----------------------------------------------------------------------------------- level setup
+        // --------------------------------------------------------------------------------------------- level setup
+        void StartNewRun(int new_seed)
+        {
+            run_seed = new_seed;
+            game_over = false;
+            LoadDepth(1, carried_player: null);
+        }
+
+        // Called when the player presses [E] over the exit stairs which begins the next level.
+        void Descend()
+        {
+            int next_depth = level.depth + 1;
+            level.Log($"You descend to the depth {next_depth}...");
+            LoadDepth(next_depth, level.player);
+        }
         
-        void GenerateLevel(int seed)
+        // Called to build the next level. Player stats are carried over from previous level.
+        void LoadDepth(int depth, EntityState carried_player)
         {
             // Clear everything from the previous level
-            ClearEntityViews();
+            TearDownLevel();
 
-            game_over = false;
-            last_seed = seed;
-            
-            level = MapGenerator.Generate(generation_settings, seed, 1);
+            level = MapGenerator.Generate(generation_settings, run_seed, depth);
             level.MessageLogged += OnMessageLogged;
+            level.item_removed += OnItemRemoved;
             
             map_renderer.Render(level.map);
 
-            EntityState player = MapGenerator.CreatePlayer(level);
+            EntityState player = MapGenerator.CreatePlayer(level, carried_player);
             EntityView player_view = SpawnView(player_prefab, player);
 
-            SpawnEnemies(seed);
+            SpawnEnemies(depth);
+            SpawnItems(depth);
+            SpawnStairs();
             
             // Set up main camera
             camera_follow.SetMapBounds(level.map.width, level.map.height);
@@ -103,26 +142,26 @@ namespace Roguelike.Game
             // Snap the camera to the player instead of gliding from previous location
             SnapCameraToPlayer(player_view);
 
-            turn_manager.Begin(level, new Rng(seed).Derive("ai"));
+            turn_manager.Begin(level, new Rng(run_seed).Derive($"ai {depth}"));
             turn_manager.player_died -= OnPlayerDied;
             turn_manager.player_died += OnPlayerDied;
             
             Debug.Log(
-                $"Generated seed {seed}: {level.rooms.Count} rooms, " + $"{level.map.FloorTiles().Count} floor tiles."
+                $"Generated seed {run_seed}: {level.rooms.Count} rooms, " + $"{level.map.FloorTiles().Count} floor tiles."
             );
         }
 
-        void SpawnEnemies(int seed)
+        void SpawnEnemies(int depth)
         {
             if (enemy_definitions == null || enemy_definitions.Length == 0) return;
 
             // Ensures changing enemy logic doesn't shift map layout
-            Rng rng = new Rng(seed).Derive("enemies");
+            Rng rng = new Rng(run_seed).Derive($"enemies {depth}");
 
             var allowed = new List<EnemyDefinition>();
             foreach (EnemyDefinition definition in enemy_definitions)
             {
-                if (definition != null && definition.minimum_depth <= level.depth)
+                if (definition != null && definition.minimum_depth <= depth)
                 {
                     allowed.Add(definition);
                 }
@@ -130,7 +169,7 @@ namespace Roguelike.Game
 
             if (allowed.Count == 0) return;
 
-            int count = difficulty_settings.enemy_count_for_depth(level.depth);
+            int count = difficulty_settings.enemy_count_for_depth(depth);
             List<Vector2Int> tiles = SpawnPlacement.ChooseTiles(
                 level, count, difficulty_settings.minimum_spawn_distance_from_player, rng);
 
@@ -145,13 +184,57 @@ namespace Roguelike.Game
                 view.SetSprite(definition.sprite);
             }
         }
+        
+        void SpawnItems(int depth)
+        {
+            if (item_definitions == null || item_definitions.Length == 0) return;
+
+            // Ensures changing loot doesn't shift map layout
+            Rng rng = new Rng(run_seed).Derive($"loot {depth}");
+
+            var allowed = new List<ItemDefinition>();
+            foreach (ItemDefinition definition in item_definitions)
+            {
+                if (definition != null && definition.minimum_depth <= depth)
+                {
+                    allowed.Add(definition);
+                }
+            }
+
+            if (allowed.Count == 0) return;
+
+            int count = difficulty_settings.item_count_for_depth(depth);
+            List<Vector2Int> tiles = SpawnPlacement.ChooseTiles(
+                level, count, 0, rng);
+
+            foreach (Vector2Int tile in tiles)
+            {
+                ItemDefinition definition = allowed[rng.Range(0, allowed.Count)];
+                ItemState item = definition.CreateItem();
+                
+                level.AddItem(tile, item);
+
+                SpriteRenderer view = Instantiate(item_prefab, entity_root);
+                view.transform.position = EntityView.CellToWorld(tile);
+                view.sprite = definition.sprite;
+                view.name = item.name;
+
+                item_views[tile] = view.gameObject;
+            }
+        }
+
+        void SpawnStairs()
+        {
+            SpriteRenderer stairs = Instantiate(stairs_prefab, entity_root);
+            stairs.transform.position = EntityView.CellToWorld(level.stairs_position);
+            stairs.name = "Stairs";
+        }
 
         EntityView SpawnView(EntityView prefab, EntityState state)
         {
             EntityView view = Instantiate(prefab, entity_root);
             view.Bind(state);
             view.name = state.name;
-            entity_views.Add(view);
             return view;
         }
 
@@ -165,18 +248,23 @@ namespace Roguelike.Game
             );
         }
 
-        void ClearEntityViews()
+        void TearDownLevel()
         {
             if (level != null)
             {
                 level.MessageLogged -= OnMessageLogged;
+                level.item_removed -= OnItemRemoved;
             }
 
-            foreach (EntityView view in entity_views)
+            item_views.Clear();
+
+            // Everything drawn in the level is parented under 'entity_root' so one loop
+            // clears all of it.
+            // Destroying a child shifts the indices of the ones after it so we iterate backwards.
+            for (int i = entity_root.childCount - 1; i >= 0; i--)
             {
-                if (view != null) Destroy(view.gameObject);
+                Destroy(entity_root.GetChild(i).gameObject);
             }
-            entity_views.Clear();
         }
 
         void OnPlayerDied()
@@ -187,17 +275,17 @@ namespace Roguelike.Game
 
         static void OnMessageLogged(string message) => Debug.Log(message);
 
+        void OnItemRemoved(Vector2Int position)
+        {
+            if (item_views.TryGetValue(position, out GameObject view))
+            {
+                item_views.Remove(position);
+                Destroy(view);
+            }
+        }
+
         static int NewSeed() => System.Environment.TickCount & 0x7FFFFFFF;
 
-        void OnGUI()
-        {
-            if (level == null) return;
-            GUI.Label(
-                new Rect(10, 10, 700, 20), 
-            $"Seed: {level.seed}| Rooms: {level.rooms.Count} | Depth: {level.depth} | Turn {turn_manager.turn_count} | " + 
-                $"HP {level.player.hp}/{level.player.max_hp} | " + 
-                $"WASD = move | SPACE = wait | [F5] Regenerate"
-            );
-        }
+        
     }    
 }

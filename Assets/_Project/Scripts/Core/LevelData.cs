@@ -26,17 +26,37 @@ namespace Roguelike.Core
 
         public EntityState player;
 
+        // ----- Add, remove, and track items on the map -----
+        public event Action<Vector2Int> item_removed;
+        readonly Dictionary<Vector2Int, ItemState> items = new Dictionary<Vector2Int, ItemState>();
+
+        public void AddItem(Vector2Int position, ItemState item)
+        {
+            items[position] = item;
+        }
+
+        public ItemState ItemAt(Vector2Int position)
+        {
+            return items.TryGetValue(position, out ItemState item) ? item : null;
+        }
+
+        public void RemoveItemAt(Vector2Int position)
+        {
+            if (items.Remove(position)) item_removed?.Invoke(position);
+        }
+
+        
         /// <summary>
         /// For logging messages to the screen
         /// </summary>
         public event Action<string> MessageLogged;
-
+        public void Log(string message) => MessageLogged?.Invoke(message);
+        
+        // ----- Add, remove, and track entities on the map -----
         readonly List<EntityState> all_entities = new List<EntityState>();
         readonly Dictionary<Vector2Int, EntityState> cell_occupancy = new Dictionary<Vector2Int, EntityState>();
 
         public IReadOnlyList<EntityState> AllEntities => all_entities;
-
-        public void Log(string message) => MessageLogged?.Invoke(message);
 
         public void AddEntity(EntityState entity)
         {
@@ -61,8 +81,6 @@ namespace Roguelike.Core
         /// <summary>
         /// Changes position of an entity by removing it from a cell's occupancy
         /// </summary>
-        /// <param name="entity"></param>
-        /// <param name="destination"></param>
         public void MoveEntity(EntityState entity, Vector2Int destination)
         {
             if (cell_occupancy.TryGetValue(entity.position, out EntityState occupant) && occupant == entity)
@@ -74,6 +92,7 @@ namespace Roguelike.Core
             cell_occupancy[destination] = entity;
         }
 
+        
         // Checks if cell is a floor and nothing is currently standing on it.
         public bool CanEnter(Vector2Int position)
             => map.IsWalkable(position) && EntityAt(position) == null;

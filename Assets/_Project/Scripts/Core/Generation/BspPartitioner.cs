@@ -8,10 +8,6 @@ namespace Roguelike.Core
         /// <summary>
         /// Recursively subdivide an area into a binary tree on non-overlapping partitions. 
         /// </summary>
-        /// <param name="area"></param>
-        /// <param name="min_partition_size"></param>
-        /// <param name="max_depth"></param>
-        /// <param name="rng"></param>
         /// <returns></returns>
         public static BspNode Partition(RectInt area, int min_partition_size, int max_depth, Rng rng)
         {

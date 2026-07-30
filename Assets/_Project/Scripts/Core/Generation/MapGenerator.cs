@@ -7,7 +7,9 @@ namespace Roguelike.Core
     {
         public static LevelData Generate(GenerationSettings settings, int seed, int depth)
         {
-            var layout_rng = new Rng(seed).Derive("layout");
+            // Each depth generates a new map layout and each seed produces the same layout at
+            // the same depths.
+            var layout_rng = new Rng(seed).Derive($"layout depth {depth}");
 
             var level = new LevelData
             {
@@ -216,7 +218,7 @@ namespace Roguelike.Core
             level.stairs_position = farthest_room.centre;
         }
 
-        public static EntityState CreatePlayer(LevelData level)
+        public static EntityState CreatePlayer(LevelData level, EntityState carried = null)
         {
             var player = new EntityState
             {
@@ -228,6 +230,19 @@ namespace Roguelike.Core
                 attack = 4,
                 defence = 1
             };
+
+            if (carried != null)
+            {
+                // Descending carries over stats and inventory from previous level but position resets.
+                player.hp = carried.hp;
+                player.max_hp = carried.max_hp;
+                player.attack = carried.attack;
+                player.defence = carried.defence;
+                player.weapon_name = carried.weapon_name;
+                player.weapon_power = carried.weapon_power;
+                player.armour_power = carried.armour_power;
+                player.potions = carried.potions;
+            }
             
             level.AddEntity(player);
             level.player = player;

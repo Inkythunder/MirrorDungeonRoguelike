@@ -26,6 +26,22 @@ namespace Roguelike.Game
             return keyboard.spaceKey.wasPressedThisFrame;
         }
 
+        public bool InteractRequested()
+        {
+            Keyboard keyboard = Keyboard.current;
+            if (keyboard == null) return false;
+
+            return keyboard.eKey.wasPressedThisFrame;
+        }
+
+        public bool PotionRequested()
+        {
+            Keyboard keyboard = Keyboard.current;
+            if (keyboard == null) return false;
+
+            return keyboard.digit1Key.wasPressedThisFrame || keyboard.numpad1Key.wasPressedThisFrame;
+        }
+
         public bool TryGetDirection(out Vector2Int direction)
         {
             direction = Vector2Int.zero;

@@ -5,6 +5,11 @@ namespace Roguelike.Core
 {
     public static class SpawnPlacement
     {
+        /// <summary>
+        /// Picks 'count' number of distinct free floor tiles on the map.
+        /// Picked tiles must be a minimum distance from the spawn otherwise they could spawn right next
+        /// to the player which would not be fun.
+        /// </summary>
         public static List<Vector2Int> ChooseTiles(
             LevelData level, 
             int count, 

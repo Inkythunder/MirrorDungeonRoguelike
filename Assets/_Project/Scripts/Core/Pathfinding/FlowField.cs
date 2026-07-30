@@ -3,6 +3,13 @@ using UnityEngine;
 
 namespace Roguelike.Core
 {
+    /// <summary>
+    /// Generate a map that gives each walkable tile a step-count to reach an origin point.
+    /// Instead of generating A* pathfinding for every entity on the map to find the player, a flow field
+    /// is generated once for the entire map and any number of entities can navigate to the player choosing
+    /// the direction with the lowest step-count.
+    /// Rebuilt once per turn with the player's cell as the origin. Every enemy reads this map.
+    /// </summary>
     public sealed class FlowField
     {
         public const int unreachable = int.MaxValue;
@@ -23,6 +30,10 @@ namespace Roguelike.Core
             return distance[position.y * map.width + position.x];
         }
 
+        /// <summary>
+        /// Recompute every cell's step-count to the origin point (player position).
+        /// Only needs to be done once per turn no matter how many enemies read the map.
+        /// </summary>
         public void Rebuild(Vector2Int origin)
         {
             for (int i = 0; i < distance.Length; i++)
@@ -54,6 +65,12 @@ namespace Roguelike.Core
             }
         }
 
+        /// <summary>
+        /// Populates 'direction' with the direction that has the lowest steps to reach 'origin'.
+        /// Returns false if the moves is blocked from reaching 'origin' or if they are already there.
+        /// Other entities that are not the player block the path. The player does not block because if
+        /// it did, it would be considered unreachable.
+        /// </summary>
         public bool TryGetStep(
             Vector2Int from, 
             LevelData level, 

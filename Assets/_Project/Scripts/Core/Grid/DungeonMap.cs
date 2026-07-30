@@ -28,7 +28,6 @@ namespace Roguelike.Core
         /// <summary>
         /// Indexer to allow accessing TileType with square brackets.
         /// </summary>
-        /// <param name="p"></param>
         public TileType this[Vector2Int p]
         {
             get
@@ -77,8 +76,6 @@ namespace Roguelike.Core
         /// <summary>
         /// Breadth-first flood fill test to check connectivity.
         /// </summary>
-        /// <param name="start"></param>
-        /// <returns></returns>
         public HashSet<Vector2Int> ReachableFrom(Vector2Int start)
         {
             var visited_tiles = new HashSet<Vector2Int>();

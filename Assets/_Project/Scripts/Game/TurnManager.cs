@@ -49,6 +49,10 @@ namespace Roguelike.Game
             turn_count = 0;
         }
 
+        /// <summary>
+        /// Executes the player's chosed action if it was a legal action and runs eveyone else's turn.
+        /// If it was not legal, returns false so the turn count does not progress.
+        /// </summary>
         public bool SubmitPlayerAction(IAction action)
         {
             if (!AcceptsInput()) return false;
@@ -66,6 +70,8 @@ namespace Roguelike.Game
 
             RunEnemyTurns();
 
+            // During 'step_duration' is when enemies position is interpolating to their new position.
+            // All enemies appear to move at once during this time.
             yield return new WaitForSeconds(step_duration);
 
             turn_count++;

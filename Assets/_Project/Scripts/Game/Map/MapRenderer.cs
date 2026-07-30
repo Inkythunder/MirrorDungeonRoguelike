@@ -12,6 +12,7 @@ namespace Roguelike.Game
         [SerializeField] Tilemap wall_tilemap;
         [SerializeField] TileBase floor_tile;
         
+        // 47 wall sprites we sliced from our tileset.
         [SerializeField] Sprite[] wall_sprites;
         
         TileBase[] wall_tiles_by_index;
@@ -65,8 +66,16 @@ namespace Roguelike.Game
             wall_tilemap.SetTilesBlock(bounds, wall_tiles);
         }
         
+        // One bit per neighbouring cell names after compass directions.
         const int N = 1, E = 2, S = 4, W = 8, NE = 16, SE = 32, SW = 64, NW = 128;
         
+        /// <summary>
+        /// Chooses which sprite a wall tile should use.
+        /// Wall tiles have a light trim of bricks on the top of the sprite so the correct sprite depends
+        /// on which of the 8 neighbouring tiles are also walls.
+        /// The neighbouring tiles are represented as bits, and we use bitwise operations to do this
+        /// efficiently.
+        /// </summary>
         TileBase PickWallTile(DungeonMap map, Vector2Int position)
         {
             
@@ -82,6 +91,9 @@ namespace Roguelike.Game
             if (IsWall(0, -1)) wall_neighbours |= S;
             if (IsWall(-1, 0)) wall_neighbours |= W;
 
+            // A diagonal neighbour only affects which sprite we use when both walls beside it are present too.
+            // Otherwise, the diagonal cell isn't touching any wall we draw, and is ignored.
+            // This reduces the set of possible neighbours from 256 to 47.
             if (IsWall(1, 1) && (wall_neighbours & (N | E)) == (N | E)) wall_neighbours |= NE;
             if (IsWall(1, -1) && (wall_neighbours & (S | E)) == (S | E)) wall_neighbours |= SE;
             if (IsWall(-1, -1) && (wall_neighbours & (S | W)) == (S | W)) wall_neighbours |= SW;
@@ -90,6 +102,8 @@ namespace Roguelike.Game
             return wall_tiles_by_index[SpriteForShape[wall_neighbours]];
         }
         
+        // Maps the number we generated in PickWallTile to the sprite number for that wall tile.
+        // e.g. "N | E" = the cells north and east of this wall are also walls and everything else is floor.
         static readonly Dictionary<int, int> SpriteForShape = new Dictionary<int, int>
         {
             // Pillar

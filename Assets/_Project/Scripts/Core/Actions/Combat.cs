@@ -10,8 +10,8 @@ namespace Roguelike.Core
         public static ActionResult Resolve(EntityState attacker, EntityState defender, LevelData level)
         {
             // Prevents negative damage which would heal the attacker if the target's
-            // defence value was higher than the attacker's attack value.
-            int damage = Mathf.Max(0, attacker.attack - defender.defence);
+            // total defence value was higher than the attacker's total attack value.
+            int damage = Mathf.Max(0, attacker.total_attack - defender.total_defence);
 
             defender.hp -= damage;
             level.Log($"{attacker.name} hits {defender.name} for {damage}");

@@ -20,9 +20,6 @@ namespace Roguelike.Core
         /// <summary>
         /// Random int.
         /// </summary>
-        /// <param name="min_inclusive"></param>
-        /// <param name="max_exclusive"></param>
-        /// <returns></returns>
         public int Range(int min_inclusive, int max_exclusive)
         {
             return _random.Next(min_inclusive, max_exclusive);
@@ -36,8 +33,6 @@ namespace Roguelike.Core
         /// <summary>
         /// Returns true with the given probability. (0.25f returns true 25% of the time)
         /// </summary>
-        /// <param name="probability"></param>
-        /// <returns></returns>
         public bool Chance(float probability) => _random.NextDouble() < probability;
 
         public T Pick<T>(IReadOnlyList<T> items) => items[Range(0, items.Count)];
@@ -47,8 +42,6 @@ namespace Roguelike.Core
         /// for the floor plan using a seed, will always have the same random number even if we don't generate enemies
         /// on this run.
         /// </summary>
-        /// <param name="label"></param>
-        /// <returns></returns>
         public Rng Derive(string label) => new Rng(Seed ^ (int)Fnv1a(label));
 
         static uint Fnv1a(string text)
