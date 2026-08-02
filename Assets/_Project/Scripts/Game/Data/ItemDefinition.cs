@@ -1,6 +1,7 @@
+using Roguelike.Core;
 using UnityEngine;
 
-namespace Roguelike.Core
+namespace Roguelike.Game
 {
     [CreateAssetMenu(menuName = "Item Definition", fileName = "Item")]
     public class ItemDefinition : ScriptableObject

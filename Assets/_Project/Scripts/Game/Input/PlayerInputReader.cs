@@ -33,6 +33,14 @@ namespace Roguelike.Game
 
             return keyboard.eKey.wasPressedThisFrame;
         }
+        
+        public bool WorldSwapRequested()
+        {
+            Keyboard keyboard = Keyboard.current;
+            if (keyboard == null) return false;
+
+            return keyboard.qKey.wasPressedThisFrame;
+        }
 
         public bool PotionRequested()
         {

@@ -1,6 +1,7 @@
+using Roguelike.Core;
 using UnityEngine;
 
-namespace Roguelike.Core
+namespace Roguelike.Game
 {
     [CreateAssetMenu(menuName = "Enemy Definition", fileName = "Enemy")]
     public class EnemyDefinition : ScriptableObject

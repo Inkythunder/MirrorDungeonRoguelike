@@ -14,7 +14,7 @@ namespace Roguelike.Tests
             };
             for (int x = 1; x < 9; x++)
             {
-                for (int y = 0; y < 9; y++)
+                for (int y = 1; y < 9; y++)
                 {
                     level.map.Carve(new Vector2Int(x, y));
                 }
@@ -106,7 +106,7 @@ namespace Roguelike.Tests
             ActionResult result = new DrinkPotionAction(level.player).Perform(level);
             
             Assert.AreNotEqual(ActionResult.Blocked, result);
-            Assert.AreEqual(level.player.hp, level.player.max_hp, "Potions should not heal more than max_hp");
+            Assert.AreEqual(level.player.max_hp, level.player.hp, "Potions should not heal more than max_hp");
         }
         
         [Test]
@@ -157,7 +157,7 @@ namespace Roguelike.Tests
             
             StepRight(level);
             
-            Assert.AreEqual(enemy.hp, 100, "Enemy hp should not change with absurdly high defence");
+            Assert.AreEqual(99, enemy.hp, "A hit must always land at least 1 damage.");
         }
     }
 }

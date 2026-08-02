@@ -17,84 +17,50 @@ namespace Roguelike.Core
         public DungeonMap map;
         public BspNode bsp_root;
         public List<Room> rooms = new List<Room>();
-
         public Vector2Int player_spawn;
         public Vector2Int stairs_position;
 
         public int depth;
         public int seed;
-
         public EntityState player;
 
-        // ----- Add, remove, and track items on the map -----
-        public event Action<Vector2Int> item_removed;
-        readonly Dictionary<Vector2Int, ItemState> items = new Dictionary<Vector2Int, ItemState>();
+        public WorldContents primary = new WorldContents();
+        public WorldContents mirror = new WorldContents();
+        public bool in_mirror_world;
 
-        public void AddItem(Vector2Int position, ItemState item)
-        {
-            items[position] = item;
-        }
+        // 'active_world' means "the world we're in now". It is 'mirror' if we're in the mirror world
+        // or 'primary' if we're not.
+        public WorldContents active_world => in_mirror_world ? mirror : primary;
 
-        public ItemState ItemAt(Vector2Int position)
-        {
-            return items.TryGetValue(position, out ItemState item) ? item : null;
-        }
-
-        public void RemoveItemAt(Vector2Int position)
-        {
-            if (items.Remove(position)) item_removed?.Invoke(position);
-        }
-
+        // Forwarders so we can call these functions in WorldContents on the currently active world.
+        // Previously there was only one world so these were all defined here in LevelData.
+        public EntityState EntityAt(Vector2Int position) => active_world.EntityAt(position);
+        public void AddEntity(EntityState entity) => active_world.AddEntity(entity);
+        public void RemoveEntity(EntityState entity) => active_world.RemoveEntity(entity);
+        public void MoveEntity(EntityState entity, Vector2Int to) => active_world.MoveEntity(entity, to);
+        public ItemState ItemAt(Vector2Int position) => active_world.ItemAt(position);
+        public void AddItem(Vector2Int position, ItemState item) => active_world.AddItem(position, item);
+        public void RemoveItemAt(Vector2Int position) => active_world.RemoveItemAt(position);
+        public IReadOnlyList<EntityState> _all_entities => active_world.AllEntities;
+        // Checks if cell is a floor and nothing is currently standing on it.
+        public bool CanEnter(Vector2Int position) => map.IsWalkable(position) && EntityAt(position) == null;
+        
         
         /// <summary>
         /// For logging messages to the screen
         /// </summary>
         public event Action<string> MessageLogged;
         public void Log(string message) => MessageLogged?.Invoke(message);
-        
-        // ----- Add, remove, and track entities on the map -----
-        readonly List<EntityState> all_entities = new List<EntityState>();
-        readonly Dictionary<Vector2Int, EntityState> cell_occupancy = new Dictionary<Vector2Int, EntityState>();
-
-        public IReadOnlyList<EntityState> AllEntities => all_entities;
-
-        public void AddEntity(EntityState entity)
-        {
-            all_entities.Add(entity);
-            cell_occupancy[entity.position] = entity;
-        }
-
-        public void RemoveEntity(EntityState entity)
-        {
-            all_entities.Remove(entity);
-
-            // Only clear the cell if this entity is the one actually recorded there
-            if (cell_occupancy.TryGetValue(entity.position, out EntityState occupant) && occupant == entity)
-            {
-                cell_occupancy.Remove(entity.position);
-            }
-        }
-
-        public EntityState EntityAt(Vector2Int position) 
-            => cell_occupancy.TryGetValue(position, out EntityState entity) ? entity : null;
 
         /// <summary>
-        /// Changes position of an entity by removing it from a cell's occupancy
+        /// Will allow us to toggle between mirror and primary worlds.
         /// </summary>
-        public void MoveEntity(EntityState entity, Vector2Int destination)
+        public event Action<bool> WorldToggled;
+
+        public void ToggleWorld()
         {
-            if (cell_occupancy.TryGetValue(entity.position, out EntityState occupant) && occupant == entity)
-            {
-                cell_occupancy.Remove(entity.position);
-            }
-
-            entity.position = destination;
-            cell_occupancy[destination] = entity;
+            in_mirror_world = !in_mirror_world;
+            WorldToggled?.Invoke(in_mirror_world);
         }
-
-        
-        // Checks if cell is a floor and nothing is currently standing on it.
-        public bool CanEnter(Vector2Int position)
-            => map.IsWalkable(position) && EntityAt(position) == null;
     }
 }

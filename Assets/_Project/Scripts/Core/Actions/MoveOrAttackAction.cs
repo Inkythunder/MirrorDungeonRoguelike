@@ -9,17 +9,17 @@ namespace Roguelike.Core
     public sealed class MoveOrAttackAction : IAction
     {
         private readonly EntityState actor;
-        private readonly Vector2Int _direction;
+        private readonly Vector2Int direction;
 
         public MoveOrAttackAction(EntityState actor, Vector2Int direction)
         {
             this.actor = actor;
-            _direction = direction;
+            this.direction = direction;
         }
 
         public ActionResult Perform(LevelData level)
         {
-            Vector2Int target = actor.position + _direction;
+            Vector2Int target = actor.position + direction;
 
             if (!level.map.IsWalkable(target))
             {
@@ -29,6 +29,20 @@ namespace Roguelike.Core
             EntityState occupant = level.EntityAt(target);
             if (occupant != null)
             {
+                if (occupant.faction == Faction.Petrified)
+                {
+                    // The space on the far side of the statue relative to the player.
+                    Vector2Int beyond = target + direction;
+                
+                    // Push only if the far side is clear.
+                    if (!level.map.IsWalkable(beyond) || level.EntityAt(beyond) != null) return ActionResult.Blocked;
+                
+                    // Push the statue one square away from the player. Player does not follow it.
+                    level.MoveEntity(occupant, beyond);
+                    level.Log("You push the statue.");
+                    return ActionResult.Pushed;
+                }
+                
                 if (occupant.faction == actor.faction)
                 {
                     return ActionResult.Blocked;

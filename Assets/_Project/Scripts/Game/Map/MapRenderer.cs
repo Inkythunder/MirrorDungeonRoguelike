@@ -3,6 +3,7 @@ using System.Linq;
 using Roguelike.Core;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.Rendering.Universal;
 
 namespace Roguelike.Game
 {
@@ -16,7 +17,7 @@ namespace Roguelike.Game
         [SerializeField] Sprite[] wall_sprites;
         
         TileBase[] wall_tiles_by_index;
-
+        
         void Awake()
         {
             if (wall_sprites == null || wall_sprites.Length != 47)
@@ -36,6 +37,15 @@ namespace Roguelike.Game
                 tile.sprite = sorted[i];
                 wall_tiles_by_index[i] = tile;
             }
+        }
+        
+        /// <summary>
+        /// Tints the tilemaps blue while player is in the mirror world or white (normal) if they are not.
+        /// </summary>
+        public void SetWorldTint(Color tint)
+        {
+            floor_tilemap.color = tint;
+            wall_tilemap.color = tint;
         }
 
         public void Render(DungeonMap map)

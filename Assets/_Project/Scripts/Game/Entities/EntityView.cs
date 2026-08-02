@@ -55,5 +55,10 @@ namespace Roguelike.Game
                 sprite_renderer.sprite = sprite;
             }
         }
+
+        public void SetTint(Color tint)
+        {
+            if (sprite_renderer != null) sprite_renderer.color = tint;
+        }
     }
 }

@@ -93,7 +93,7 @@ namespace Roguelike.Game
             field.Rebuild(level.player.position);
             
             acting_buffer.Clear();
-            foreach (EntityState entity in level.AllEntities)
+            foreach (EntityState entity in level._all_entities)
             {
                 if (entity.faction == Faction.Hostile)
                 {

@@ -1,4 +1,3 @@
-using System;
 using Roguelike.Core;
 using TMPro;
 using UnityEngine;
