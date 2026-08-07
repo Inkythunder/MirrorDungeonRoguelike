@@ -31,6 +31,9 @@ namespace Roguelike.Core
             {
                 if (occupant.faction == Faction.Petrified)
                 {
+                    // Only the player can shove a statue.
+                    if (actor.faction != Faction.Player) return ActionResult.Blocked;
+                    
                     // The space on the far side of the statue relative to the player.
                     Vector2Int beyond = target + direction;
                 
