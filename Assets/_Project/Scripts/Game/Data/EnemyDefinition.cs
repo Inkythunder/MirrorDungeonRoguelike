@@ -15,9 +15,15 @@ namespace Roguelike.Game
         public int attack = 2;
         public int defence = 0;
         public int aggro_range = 8;
-
+        public bool is_key = false;
+        
         [Tooltip("Enemy will never appear on level shallower than this.")]
         public int minimum_depth = 1;
+
+        [Tooltip("Maximum number of this enemy type allowed per level.")]
+        public int max_per_level = 3;
+
+        public int max_for_depth(int depth) => max_per_level * depth;
 
         public EntityState CreateEntity(Vector2Int position, int depth)
         {
@@ -33,7 +39,8 @@ namespace Roguelike.Game
                 attack = this.attack,
                 defence = this.defence,
                 behaviour = this.behaviour,
-                aggro_range = this.aggro_range
+                aggro_range = this.aggro_range,
+                is_key = this.is_key
             };
         }
     }

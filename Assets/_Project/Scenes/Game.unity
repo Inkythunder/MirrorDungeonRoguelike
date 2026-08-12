@@ -119,6 +119,96 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &4164781
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4164782}
+  - component: {fileID: 4164784}
+  - component: {fileID: 4164783}
+  - component: {fileID: 4164785}
+  m_Layer: 5
+  m_Name: flash_panel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &4164782
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4164781}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1955849250}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &4164783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4164781}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &4164784
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4164781}
+  m_CullTransparentMesh: 1
+--- !u!114 &4164785
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4164781}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce09124a7260f15ddac793db1eb52182, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Roguelike.Game::Roguelike.Game.ScreenFlash
+  flash_panel: {fileID: 4164783}
+  duration: 0.3
 --- !u!1 &143729235
 GameObject:
   m_ObjectHideFlags: 0
@@ -1139,7 +1229,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.7490196}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1216,10 +1306,13 @@ MonoBehaviour:
   input_reader: {fileID: 1312745209}
   camera_follow: {fileID: 519420034}
   entity_root: {fileID: 901493468}
+  global_light: {fileID: 619394801}
+  screen_flash: {fileID: 4164785}
   player_prefab: {fileID: 4059082981582859210, guid: 82811bb49715fac8384e7edee19733c4, type: 3}
   enemy_prefab: {fileID: 236119947203250963, guid: 45c24f37e5a47132685f0402c3f1ed3a, type: 3}
   stairs_prefab: {fileID: 6806565433599632930, guid: 3ef5cbae7a0572c559de0e4ec5bb0d21, type: 3}
   item_prefab: {fileID: 541121477938306191, guid: b3390cb904301ce73b3981408dfd8727, type: 3}
+  glyph_prefab: {fileID: 4338175486232437685, guid: 8d34fa3be63372dcca7f8302df92aa9e, type: 3}
   enemy_definitions:
   - {fileID: 11400000, guid: ec879ae9e79626c389f38645799e89f3, type: 2}
   - {fileID: 11400000, guid: 360b56f7cd4469e8e81827e9ebf486e1, type: 2}
@@ -2008,6 +2101,7 @@ RectTransform:
   - {fileID: 1565919522}
   - {fileID: 143729236}
   - {fileID: 1132797031}
+  - {fileID: 4164782}
   - {fileID: 1137552248}
   m_Father: {fileID: 1603439024}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

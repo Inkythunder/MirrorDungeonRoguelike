@@ -19,6 +19,8 @@ namespace Roguelike.Core
         public List<Room> rooms = new List<Room>();
         public Vector2Int player_spawn;
         public Vector2Int stairs_position;
+        public bool stairs_locked = true;
+        public Vector2Int glyph_position;
 
         public int depth;
         public int seed;
@@ -64,6 +66,22 @@ namespace Roguelike.Core
         {
             in_mirror_world = !in_mirror_world;
             WorldToggled?.Invoke(in_mirror_world);
+        }
+
+        /// <summary>
+        /// Stairs unlock when the key enemy is placed on the glyph. Either as a statue
+        /// or by walking onto it by itself.
+        /// Stairs remain unlocked for the remainder of the level because the statue wanders off.
+        /// </summary>
+        public void CheckGlyph()
+        {
+            if (!stairs_locked) return;
+
+            EntityState occupant = mirror.EntityAt(glyph_position);
+            if (occupant == null || !occupant.is_key) return;
+
+            stairs_locked = false;
+            Log("The glyph flares and the stairs are unlocked...");
         }
     }
 }

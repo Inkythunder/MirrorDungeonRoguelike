@@ -27,6 +27,7 @@ namespace Roguelike.Core
 
         public EnemyBehaviour behaviour = EnemyBehaviour.Wanderer;
         public int aggro_range = 8;
+        public bool is_key = false;
     }
 }
 

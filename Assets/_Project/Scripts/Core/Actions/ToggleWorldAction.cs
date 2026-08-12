@@ -23,6 +23,7 @@ namespace Roguelike.Core
             if (level.in_mirror_world)
             {
                 Petrification.Petrify(level);
+                level.CheckGlyph();
             }
             else
             {

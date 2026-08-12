@@ -216,6 +216,16 @@ namespace Roguelike.Core
             }
             
             level.stairs_position = farthest_room.centre;
+
+            // Using a do-while loop so it can pick a room first, then I have a room to check the
+            // stairs location against.
+            Room puzzle_room;
+            do
+            {
+                puzzle_room = level.rooms[rng.Range(0, level.rooms.Count)];
+            } while (puzzle_room == farthest_room);
+            
+            level.glyph_position = puzzle_room.centre;
         }
 
         public static EntityState CreatePlayer(LevelData level, EntityState carried = null)

@@ -22,10 +22,12 @@ namespace Roguelike.Game
         [SerializeField] EntityView enemy_prefab;
         [SerializeField] SpriteRenderer stairs_prefab;
         [SerializeField] SpriteRenderer item_prefab;
+        [SerializeField] SpriteRenderer glyph_prefab;
         
         [Header("Data")]
         [SerializeField] EnemyDefinition[] enemy_definitions;
         [SerializeField] ItemDefinition[] item_definitions;
+        [SerializeField] EnemyDefinition key_enemy_definition;
         
         [Header("Tuning")]
         [SerializeField] GenerationSettings generation_settings = new GenerationSettings();
@@ -82,17 +84,26 @@ namespace Roguelike.Game
 
             if (input_reader.InteractRequested())
             {
+                // Player cannot descend while in the mirror world, they must switch to the primary world.
                 if (level.in_mirror_world)
                 {
                     level.Log("You cannot descend in the mirror world...");
                 }
                 else if (level.player.position == level.stairs_position)
                 {
-                    Descend();
+                    // Player cannot descend if they haven't activated the glyph.
+                    if (level.stairs_locked)
+                    {
+                        level.Log("The stairs are sealed. Activate the glyph to descend.");
+                    }
+                    else
+                    {
+                        Descend();
+                    }
                 }
+                // For when the player tries to press [E] while not standing over stairs
                 else
                 {
-                    // For when the player tries to press [E] while not standing over stairs
                     level.Log("There are no stairs here.");
                 }
             }
@@ -133,12 +144,14 @@ namespace Roguelike.Game
         }
         
         // Called to build the next level. Player stats are carried over from previous level.
+        // Called at the start of the game and upon descension.
         void LoadDepth(int depth, EntityState carried_player)
         {
             // Clear everything from the previous level
             TearDownLevel();
 
             level = MapGenerator.Generate(generation_settings, run_seed, depth);
+            // Subscribe to callbacks
             level.MessageLogged += OnMessageLogged;
             level.primary.item_removed += OnItemRemoved;
             level.mirror.item_removed += OnItemRemoved;
@@ -146,6 +159,7 @@ namespace Roguelike.Game
             
             map_renderer.Render(level.map);
             // Applying this here prevents mirror world tint from showing when descending to a primary world.
+            // Player is not supposed to be able to descend while in the mirror world but this is just in case.
             ApplyWorldTint(level.in_mirror_world);
 
             EntityState player = MapGenerator.CreatePlayer(level, carried_player);
@@ -154,6 +168,7 @@ namespace Roguelike.Game
             SpawnEnemies(depth);
             SpawnItems(depth);
             SpawnStairs();
+            SpawnGlyph();
             
             // Set up main camera
             camera_follow.SetMapBounds(level.map.width, level.map.height);
@@ -172,36 +187,72 @@ namespace Roguelike.Game
 
         void SpawnEnemies(int depth)
         {
-            if (enemy_definitions == null || enemy_definitions.Length == 0) return;
-
             // Ensures changing enemy logic doesn't shift map layout
             Rng rng = new Rng(run_seed).Derive($"enemies {depth}");
 
+            // A list of all the allowed types of enemy for this level.
             var allowed = new List<EnemyDefinition>();
             foreach (EnemyDefinition definition in enemy_definitions)
             {
-                if (definition != null && definition.minimum_depth <= depth)
+                if (definition != null 
+                    && definition.minimum_depth <= depth
+                    && definition.max_for_depth(depth) > 0)
                 {
                     allowed.Add(definition);
                 }
             }
-
+            
             if (allowed.Count == 0) return;
 
-            int count = difficulty_settings.enemy_count_for_depth(depth);
+            int enemy_count = difficulty_settings.enemy_count_for_depth(depth);
             List<Vector2Int> tiles = SpawnPlacement.ChooseTiles(
-                level, count, difficulty_settings.minimum_spawn_distance_from_player, rng);
+                level, enemy_count, difficulty_settings.minimum_spawn_distance_from_player, rng);
 
-            foreach (Vector2Int tile in tiles)
+            // If there's nowhere legal for an enemy to stand there can be no key.
+            // With no key, the level would be broken.
+            if (tiles.Count == 0 || key_enemy_definition == null) level.stairs_locked = false;
+
+            // The key enemy is spawned first and only once.
+            // Must be done here and not in the loop to prevent multiple key enemies.
+            int first_normal_tile = 0;
+            if (key_enemy_definition != null && tiles.Count > 0)
             {
-                EnemyDefinition definition = allowed[rng.Range(0, allowed.Count)];
-                EntityState enemy = definition.CreateEntity(tile, depth);
-                
-                level.AddEntity(enemy);
-
-                EntityView view = SpawnView(enemy_prefab, enemy);
-                view.SetSprite(definition.sprite);
+                SpawnEnemy(key_enemy_definition, tiles[0], depth);
+                first_normal_tile = 1;
             }
+
+            // Types are picked at random so the mix of enemies varies between seeds, but a type is 
+            // retired once it hits the maximum cap on how many can spawn to prevent a single enemy type
+            // from covering the entire level.
+            var spawned_per_type = new Dictionary<EnemyDefinition, int>();
+            var available = new List<EnemyDefinition>(allowed);
+
+            for (int i = first_normal_tile; i < tiles.Count; i++)
+            {
+                if (available.Count == 0) break;
+
+                int index = rng.Range(0, available.Count);
+                EnemyDefinition definition = available[index];
+
+                SpawnEnemy(definition, tiles[i], depth);
+
+                int count = spawned_per_type.GetValueOrDefault(definition) + 1;
+                spawned_per_type[definition] = count;
+
+                if (count >= definition.max_for_depth(depth))
+                {
+                    available.RemoveAt(index);
+                }
+            }
+        }
+
+        void SpawnEnemy(EnemyDefinition definition, Vector2Int tile, int depth)
+        {
+            EntityState enemy = definition.CreateEntity(tile, depth);
+            level.AddEntity(enemy);
+
+            EntityView view = SpawnView(enemy_prefab, enemy);
+            view.SetSprite(definition.sprite);
         }
         
         void SpawnItems(int depth)
@@ -249,6 +300,14 @@ namespace Roguelike.Game
             stairs.transform.position = EntityView.CellToWorld(level.stairs_position);
             stairs.color = world_tint;
             stairs.name = "Stairs";
+        }
+
+        void SpawnGlyph()
+        {
+            SpriteRenderer glyph = Instantiate(glyph_prefab, entity_root);
+            glyph.transform.position = EntityView.CellToWorld(level.glyph_position);
+            glyph.color = world_tint;
+            glyph.name = "Glyph";
         }
 
         EntityView SpawnView(EntityView prefab, EntityState state)

@@ -46,7 +46,7 @@ namespace Roguelike.Game
             }
         }
 
-        public static Vector3 CellToWorld(Vector2Int cell) => new Vector3(cell.x + 0.5f, cell.y + +0.5f, 0f);
+        public static Vector3 CellToWorld(Vector2Int cell) => new Vector3(cell.x + 0.5f, cell.y + 0.1f, 0f);
 
         public void SetSprite(Sprite sprite)
         {

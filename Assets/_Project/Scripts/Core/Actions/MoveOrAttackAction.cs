@@ -29,6 +29,7 @@ namespace Roguelike.Core
             EntityState occupant = level.EntityAt(target);
             if (occupant != null)
             {
+                // If the target is a statue, we want to push it, not attack.
                 if (occupant.faction == Faction.Petrified)
                 {
                     // Only the player can shove a statue.
@@ -43,17 +44,21 @@ namespace Roguelike.Core
                     // Push the statue one square away from the player. Player does not follow it.
                     level.MoveEntity(occupant, beyond);
                     level.Log("You push the statue.");
+                    level.CheckGlyph();
                     return ActionResult.Pushed;
                 }
                 
+                // If the target is the same faction (hostile on hostile violence) that's not allowed.
                 if (occupant.faction == actor.faction)
                 {
                     return ActionResult.Blocked;
                 }
 
+                // If the target is not the same faction, and not a statue, we're fighting it.
                 return Combat.Resolve(actor, occupant, level);
             }
             
+            // If there's nothing standing in the target location, we're just walking.
             level.MoveEntity(actor, target);
             
             // Walking over an item picks it up. (Would be funny to make enemies pick up weapons too)
