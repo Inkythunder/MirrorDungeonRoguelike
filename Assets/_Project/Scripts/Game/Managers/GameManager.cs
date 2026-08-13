@@ -44,6 +44,9 @@ namespace Roguelike.Game
             new Dictionary<Vector2Int, GameObject>();
 
         private Color world_tint = WorldPalette.primary_world.tint;
+        private EntityView key_view;
+        private Light2D glyph_glow;
+        
 
         void Start()
         {
@@ -158,9 +161,6 @@ namespace Roguelike.Game
             level.WorldToggled += OnWorldToggled;
             
             map_renderer.Render(level.map);
-            // Applying this here prevents mirror world tint from showing when descending to a primary world.
-            // Player is not supposed to be able to descend while in the mirror world but this is just in case.
-            ApplyWorldTint(level.in_mirror_world);
 
             EntityState player = MapGenerator.CreatePlayer(level, carried_player);
             EntityView player_view = SpawnView(player_prefab, player);
@@ -169,6 +169,10 @@ namespace Roguelike.Game
             SpawnItems(depth);
             SpawnStairs();
             SpawnGlyph();
+            
+            // Applying this here prevents mirror world tint from showing when descending to a primary world.
+            // Player is not supposed to be able to descend while in the mirror world but this is just in case.
+            ApplyWorldTint(level.in_mirror_world);
             
             // Set up main camera
             camera_follow.SetMapBounds(level.map.width, level.map.height);
@@ -217,7 +221,7 @@ namespace Roguelike.Game
             int first_normal_tile = 0;
             if (key_enemy_definition != null && tiles.Count > 0)
             {
-                SpawnEnemy(key_enemy_definition, tiles[0], depth);
+                key_view = SpawnEnemy(key_enemy_definition, tiles[0], depth);
                 first_normal_tile = 1;
             }
 
@@ -246,13 +250,15 @@ namespace Roguelike.Game
             }
         }
 
-        void SpawnEnemy(EnemyDefinition definition, Vector2Int tile, int depth)
+        EntityView SpawnEnemy(EnemyDefinition definition, Vector2Int tile, int depth)
         {
             EntityState enemy = definition.CreateEntity(tile, depth);
             level.AddEntity(enemy);
 
             EntityView view = SpawnView(enemy_prefab, enemy);
             view.SetSprite(definition.sprite);
+            view.SetGlow(false);
+            return view;
         }
         
         void SpawnItems(int depth)
@@ -294,6 +300,7 @@ namespace Roguelike.Game
             }
         }
 
+        // Stairs are the exit gate for the level. Exactly one per level.
         void SpawnStairs()
         {
             SpriteRenderer stairs = Instantiate(stairs_prefab, entity_root);
@@ -302,12 +309,21 @@ namespace Roguelike.Game
             stairs.name = "Stairs";
         }
 
+        // Glyph is the symbol on the floor that the key enemy must be placed on to unlock the stairs.
         void SpawnGlyph()
         {
             SpriteRenderer glyph = Instantiate(glyph_prefab, entity_root);
             glyph.transform.position = EntityView.CellToWorld(level.glyph_position);
             glyph.color = world_tint;
             glyph.name = "Glyph";
+            glyph_glow = glyph.GetComponentInChildren<Light2D>(true);
+        }
+
+        // Make the key enemy and the glyph glow so the player can distinguish them apart.
+        void ApplyGlow(bool in_mirror_world)
+        {
+            if (key_view != null) key_view.SetGlow(in_mirror_world);
+            if (glyph_glow != null) glyph_glow.enabled = in_mirror_world;
         }
 
         EntityView SpawnView(EntityView prefab, EntityState state)
@@ -338,7 +354,11 @@ namespace Roguelike.Game
                 level.mirror.item_removed -= OnItemRemoved;
                 level.WorldToggled -= OnWorldToggled;
             }
-
+            
+            // Clear the flow for the key enemy and the glyph
+            key_view = null;
+            glyph_glow = null;
+            
             item_views.Clear();
 
             // Everything drawn in the level is parented under 'entity_root' so one loop
@@ -393,6 +413,8 @@ namespace Roguelike.Game
             {
                 renderer.color = world_tint;
             }
+            
+            ApplyGlow(in_mirror_world);
         }
     }    
 }

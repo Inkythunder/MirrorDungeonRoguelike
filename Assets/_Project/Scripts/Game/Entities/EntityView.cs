@@ -1,5 +1,6 @@
 using Roguelike.Core;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 namespace Roguelike.Game
 {
@@ -7,6 +8,15 @@ namespace Roguelike.Game
     {
         [SerializeField] SpriteRenderer sprite_renderer;
         [SerializeField] float move_speed = 14f;
+        [SerializeField] private Light2D glow;
+
+        /// <summary>
+        /// The key enemy is lit while player is in the mirror world.
+        /// </summary>
+        public void SetGlow(bool on)
+        {
+            if (glow != null) glow.enabled = on;
+        }
         
         public EntityState state { get; private set; }
 
