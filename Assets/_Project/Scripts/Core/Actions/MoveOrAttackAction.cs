@@ -41,7 +41,13 @@ namespace Roguelike.Core
                     // Push only if the far side is clear.
                     if (!level.map.IsWalkable(beyond) || level.EntityAt(beyond) != null) return ActionResult.Blocked;
                 
-                    // Push the statue one square away from the player. Player does not follow it.
+                    // Unless it's a guardian, push the statue one square away from the player.
+                    // Player does not follow it.
+                    if (occupant.is_guardian)
+                    {
+                        level.Log("That's too heavy to move.");
+                        return ActionResult.Blocked;
+                    }
                     level.MoveEntity(occupant, beyond);
                     level.Log("You push the statue.");
                     level.CheckGlyph();

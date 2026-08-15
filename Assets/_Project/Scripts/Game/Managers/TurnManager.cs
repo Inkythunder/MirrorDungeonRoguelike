@@ -75,6 +75,8 @@ namespace Roguelike.Game
             yield return new WaitForSeconds(step_duration);
 
             turn_count++;
+            // Putting 'Tick' here means the guardians don't move on the same turn they wake.
+            Guardians.Tick(level);
 
             if (!level.player.IsAlive)
             {

@@ -1320,10 +1320,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7151af0bc2643eb5fabb5ad27ee95096, type: 2}
   - {fileID: 11400000, guid: 62b353d22b22ebb149fe97197a8108e5, type: 2}
   - {fileID: 11400000, guid: f0b1e3e0a803c7df6850ef48d53bd5bf, type: 2}
+  key_enemy_definition: {fileID: 11400000, guid: c6e5169122f3d5afbb5b76ccb094a294, type: 2}
+  guardian_definition: {fileID: 11400000, guid: 1877d9ce22ff29fb3a34cf9e201bafc3, type: 2}
   generation_settings:
-    width: 80
-    height: 60
-    minimum_partition_size: 14
+    width: 64
+    height: 64
+    minimum_partition_size: 16
     maximum_depth: 4
     room_margin: 2
     walk_iterations: 10
@@ -1331,10 +1333,10 @@ MonoBehaviour:
     minimum_room_fill: 0.45
     corridor_width: 3
   difficulty_settings:
-    base_enemy_count: 5
-    enemies_per_depth: 1
+    base_enemy_count: 3
+    enemies_per_depth: 3
     minimum_spawn_distance_from_player: 12
-    base_item_count: 4
+    base_item_count: 5
     items_per_depth: 0
   seed: 12345
 --- !u!114 &1312745208

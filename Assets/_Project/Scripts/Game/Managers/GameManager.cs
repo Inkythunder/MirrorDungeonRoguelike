@@ -28,6 +28,7 @@ namespace Roguelike.Game
         [SerializeField] EnemyDefinition[] enemy_definitions;
         [SerializeField] ItemDefinition[] item_definitions;
         [SerializeField] EnemyDefinition key_enemy_definition;
+        [SerializeField] EnemyDefinition guardian_definition;
         
         [Header("Tuning")]
         [SerializeField] GenerationSettings generation_settings = new GenerationSettings();
@@ -166,6 +167,7 @@ namespace Roguelike.Game
             EntityView player_view = SpawnView(player_prefab, player);
 
             SpawnEnemies(depth);
+            SpawnGuardians(depth);
             SpawnItems(depth);
             SpawnStairs();
             SpawnGlyph();
@@ -247,6 +249,28 @@ namespace Roguelike.Game
                 {
                     available.RemoveAt(index);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Guardians are statues in the primary world and wake one by one in the mirror world.
+        /// They spawn in their own pass after the normal enemies have taken their tiles.
+        /// Every level has a predictable number of guardians regardless of the random enemy mix.
+        /// </summary>
+        void SpawnGuardians(int depth)
+        {
+            if (guardian_definition == null) return;
+            if (guardian_definition.minimum_depth > depth) return;
+
+            Rng rng = new Rng(run_seed).Derive($"guardians {depth}");
+
+            int count = guardian_definition.max_for_depth(depth);
+            List<Vector2Int> tiles = SpawnPlacement.ChooseTiles(
+                level, count, difficulty_settings.minimum_spawn_distance_from_player, rng);
+
+            foreach (Vector2Int tile in tiles)
+            {
+                SpawnEnemy(guardian_definition, tile, depth);
             }
         }
 

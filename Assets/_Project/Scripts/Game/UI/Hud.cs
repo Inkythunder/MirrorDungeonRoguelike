@@ -39,7 +39,12 @@ namespace Roguelike.Game
 
             // If player is standing over the stairs, show that they can press E to descent.
             // Otherwise, just show the depth level.
-            if (player.position == level.stairs_position)
+            if (level.in_mirror_world && level.turns_per_awakening > 0)
+            {
+                int until_next = level.turns_per_awakening - (level.mirror_turns % level.turns_per_awakening);
+                depth_text.text = $"Depth{level.depth} | Something wakes in {until_next}";
+            }
+            else if (player.position == level.stairs_position)
             {
                 depth_text.text = $"Depth {level.depth} | [E] to descend";
             }

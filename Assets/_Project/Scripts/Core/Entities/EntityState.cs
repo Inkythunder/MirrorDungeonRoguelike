@@ -6,6 +6,9 @@ namespace Roguelike.Core
     {
         public string name = "Entity";
         public Faction faction;
+        
+        // Guardians are statues in the primary world and wake up in the mirror world.
+        public bool is_guardian = false;
 
         public Vector2Int position;
 

@@ -32,6 +32,16 @@ namespace Roguelike.Core
 
         // Store a list of all of the hostile enemies that became petrified upon entering the mirror world.
         public readonly List<EntityState> petrified_enemies = new List<EntityState>();
+        
+        // Turns the player has spent in the mirror world on this level. Does not reset when they step out.
+        // Hopping back and forth does not prevent guardians from waking.
+        public int mirror_turns;
+        
+        // How many guardians have woken up.
+        public int guardians_awakened;
+
+        // How many turns it takes to wake up another guardian.
+        public int turns_per_awakening = 50;
 
         // 'active_world' means "the world we're in now". It is 'mirror' if we're in the mirror world
         // or 'primary' if we're not.
