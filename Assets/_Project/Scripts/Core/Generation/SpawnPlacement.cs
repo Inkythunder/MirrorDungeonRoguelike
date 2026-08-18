@@ -24,6 +24,11 @@ namespace Roguelike.Core
                 {
                     if (!level.CanEnter(tile)) continue;
                     if (tile == level.stairs_position) continue;
+                    
+                    // This prevents any enemies from spawning on the glyph.
+                    // Specifically this is a problem if a guardian spawns on the glyph because they cannot be
+                    // shoved so the player would have to use the key enemy and escape.
+                    if (tile == level.glyph_position) continue;
 
                     int distance = Mathf.Abs(tile.x - level.player_spawn.x) +
                                    Mathf.Abs(tile.y - level.player_spawn.y);

@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using Roguelike.Core;
 using UnityEngine;
-using UnityEngine.LightTransport.PostProcessing;
 
 namespace Roguelike.Tests
 {
@@ -139,7 +138,7 @@ namespace Roguelike.Tests
                 for (int x = 0; x < map.width; x++)
                 {
                     Assert.AreEqual(TileType.Wall, map[new Vector2Int(x, 0)]);
-                    Assert.AreEqual(TileType.Wall, map[new Vector2Int(x, map.height - 1)]);
+                    Assert.AreEqual(TileType.Wall, map[new Vector2Int(x, map.width - 1)]);
                 }
                 for (int y = 0; y < map.width; y++)
                 {

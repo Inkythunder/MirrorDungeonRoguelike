@@ -45,7 +45,7 @@ namespace Roguelike.Game
                 desired.x = map_width >= half_width * 2
                     ? Mathf.Clamp(desired.x, half_width, map_width - half_width) : map_width / 2f;
                 
-                desired.y = map_width >= half_height * 2
+                desired.y = map_height >= half_height * 2
                     ? Mathf.Clamp(desired.y, half_height, map_height - half_height) : map_height / 2f;
             }
 

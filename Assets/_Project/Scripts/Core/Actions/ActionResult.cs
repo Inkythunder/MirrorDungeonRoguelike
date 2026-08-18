@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace Roguelike.Core
 {
     public enum ActionResult
