@@ -23,6 +23,7 @@ namespace Roguelike.Game
         [SerializeField] SpriteRenderer stairs_prefab;
         [SerializeField] SpriteRenderer item_prefab;
         [SerializeField] SpriteRenderer glyph_prefab;
+        [SerializeField] DamageNumber damage_number_prefab;
         
         [Header("Data")]
         [SerializeField] EnemyDefinition[] enemy_definitions;
@@ -36,10 +37,12 @@ namespace Roguelike.Game
 
         [Tooltip("0 picks a random seed on each run.")] 
         [SerializeField] int seed = 0;
+        [SerializeField] MessageLog message_log;
         
         public LevelData level { get; private set; }
-        
         public bool game_over { get; private set; }
+        public RunStats run_stats { get; private set; }
+        
         int run_seed;
         private readonly Dictionary<Vector2Int, GameObject> item_views = 
             new Dictionary<Vector2Int, GameObject>();
@@ -51,7 +54,8 @@ namespace Roguelike.Game
 
         void Start()
         {
-            StartNewRun(seed != 0 ? seed : NewSeed());
+            // Seed is picked by the menu scene.
+            StartNewRun(RunConfig.has_seed ? RunConfig.seed : seed != 0 ? seed : NewSeed());
         }
 
         void Update()
@@ -136,6 +140,7 @@ namespace Roguelike.Game
         {
             run_seed = new_seed;
             game_over = false;
+            run_stats = new RunStats();
             LoadDepth(1, carried_player: null);
         }
 
@@ -153,6 +158,9 @@ namespace Roguelike.Game
         {
             // Clear everything from the previous level
             TearDownLevel();
+            
+            // Remove messages from the message log about the previous level.
+            message_log.Clear();
 
             level = MapGenerator.Generate(generation_settings, run_seed, depth);
             // Subscribe to callbacks
@@ -160,6 +168,8 @@ namespace Roguelike.Game
             level.primary.item_removed += OnItemRemoved;
             level.mirror.item_removed += OnItemRemoved;
             level.WorldToggled += OnWorldToggled;
+            level.DamageDealt += OnDamageDealt;
+            level.EnemyKilled += OnEnemyKilled;
             
             map_renderer.Render(level.map);
 
@@ -281,7 +291,9 @@ namespace Roguelike.Game
 
             EntityView view = SpawnView(enemy_prefab, enemy);
             view.SetSprite(definition.sprite);
+            view.SetBaseColour(definition.tint);
             view.SetGlow(false);
+            view.ShowHealthBar(true);
             return view;
         }
         
@@ -377,6 +389,7 @@ namespace Roguelike.Game
                 level.primary.item_removed -= OnItemRemoved;
                 level.mirror.item_removed -= OnItemRemoved;
                 level.WorldToggled -= OnWorldToggled;
+                level.DamageDealt -= OnDamageDealt;
             }
             
             // Clear the flow for the key enemy and the glyph
@@ -400,7 +413,11 @@ namespace Roguelike.Game
             Debug.Log("Player died");
         }
 
-        static void OnMessageLogged(string message) => Debug.Log(message);
+        void OnMessageLogged(string message)
+        {
+            Debug.Log(message);
+            if (message_log != null) message_log.Add(message);
+        }
 
         void OnItemRemoved(Vector2Int position)
         {
@@ -416,6 +433,19 @@ namespace Roguelike.Game
             // Flash first, then change world.
             screen_flash.Play(WorldPalette.For(in_mirror_world).tint);
             ApplyWorldTint(in_mirror_world);
+        }
+
+        void OnDamageDealt(Vector2Int position, int amount)
+        {
+            // Parented to entity_root so TearDownLevel cleans up any numbers still rising
+            // when the level changes.
+            DamageNumber number = Instantiate(damage_number_prefab, entity_root);
+            number.Show(amount, EntityView.CellToWorld(position));
+        }
+
+        void OnEnemyKilled(EntityState enemy)
+        {
+            run_stats.CountKill(enemy.name);
         }
 
         static int NewSeed() => System.Environment.TickCount & 0x7FFFFFFF;
@@ -435,7 +465,8 @@ namespace Roguelike.Game
             
             foreach (SpriteRenderer renderer in entity_root.GetComponentsInChildren<SpriteRenderer>(true))
             {
-                renderer.color = world_tint;
+                if(renderer.TryGetComponent(out EntityView view)) view.SetTint(world_tint);
+                else renderer.color = world_tint;
             }
             
             ApplyGlow(in_mirror_world);

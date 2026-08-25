@@ -16,6 +16,7 @@ namespace Roguelike.Core
 
             defender.hp -= damage;
             level.Log($"{attacker.name} hits {defender.name} for {damage}");
+            level.ReportDamage(defender.position, damage);
 
             if (defender.is_key && !defender.IsAlive)
             {
@@ -28,6 +29,7 @@ namespace Roguelike.Core
             {
                 level.Log($"{defender.name} dies.");
                 level.RemoveEntity(defender);
+                if(attacker.faction == Faction.Player) level.CountKill(defender);
             }
 
             return ActionResult.Attacked;

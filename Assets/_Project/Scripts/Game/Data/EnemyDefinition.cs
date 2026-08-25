@@ -26,6 +26,9 @@ namespace Roguelike.Game
         [Tooltip("Maximum number of this enemy type allowed per level.")]
         public int max_per_level = 3;
 
+        [Tooltip("Multiplied with world tint. White = normal sprite colour.")]
+        public Color tint = Color.white;
+
         public int max_for_depth(int depth) => max_per_level * depth;
 
         public EntityState CreateEntity(Vector2Int position, int depth)

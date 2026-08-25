@@ -72,6 +72,18 @@ namespace Roguelike.Core
         /// </summary>
         public event Action<bool> WorldToggled;
 
+        /// <summary>
+        /// Where damage landed and how much.
+        /// </summary>
+        public event Action<Vector2Int, int> DamageDealt;
+        public void ReportDamage(Vector2Int position, int amount) => DamageDealt?.Invoke(position, amount);
+
+        /// <summary>
+        /// To keep track of how many enemies have been killed this run.
+        /// </summary>
+        public event Action<EntityState> EnemyKilled;
+        public void CountKill(EntityState enemy) => EnemyKilled?.Invoke(enemy);
+
         public void ToggleWorld()
         {
             in_mirror_world = !in_mirror_world;

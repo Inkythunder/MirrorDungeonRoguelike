@@ -138,9 +138,9 @@ namespace Roguelike.Tests
                 for (int x = 0; x < map.width; x++)
                 {
                     Assert.AreEqual(TileType.Wall, map[new Vector2Int(x, 0)]);
-                    Assert.AreEqual(TileType.Wall, map[new Vector2Int(x, map.width - 1)]);
+                    Assert.AreEqual(TileType.Wall, map[new Vector2Int(x, map.height - 1)]);
                 }
-                for (int y = 0; y < map.width; y++)
+                for (int y = 0; y < map.height; y++)
                 {
                     Assert.AreEqual(TileType.Wall, map[new Vector2Int(0, y)]);
                     Assert.AreEqual(TileType.Wall, map[new Vector2Int(map.width - 1, y)]);

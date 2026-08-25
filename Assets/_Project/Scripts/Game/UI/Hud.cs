@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Roguelike.Core;
 using TMPro;
 using UnityEngine;
@@ -21,6 +22,7 @@ namespace Roguelike.Game
         [SerializeField] TMP_Text debug_text;
         [SerializeField] GameObject death_panel;
         [SerializeField] TMP_Text death_text;
+        [SerializeField] EdgeMarker glyph_arrow;
 
         private void LateUpdate()
         {
@@ -42,15 +44,30 @@ namespace Roguelike.Game
             if (level.in_mirror_world && level.turns_per_awakening > 0)
             {
                 int until_next = level.turns_per_awakening - (level.mirror_turns % level.turns_per_awakening);
-                depth_text.text = $"Depth{level.depth} | Something wakes in {until_next}";
+
+                float urgency = 1f - (float)(until_next - 1) / Mathf.Max(1, level.turns_per_awakening - 1);
+                string hex = ColorUtility.ToHtmlStringRGB(Color.Lerp(Color.white, Color.red, urgency));
+                
+                depth_text.text = $"Depth{level.depth} | Something wakes in <color=#{hex}>{until_next}</color> turns";
             }
             else if (player.position == level.stairs_position)
             {
-                depth_text.text = $"Depth {level.depth} | [E] to descend";
+                depth_text.text = level.stairs_locked
+                    ? $"Depth {level.depth} | [E] to descend"
+                    : $"Depth {level.depth} | Sealed - find the glyph";
             }
             else
             {
                 depth_text.text = $"Depth {level.depth}";    
+            }
+
+            if (level.in_mirror_world && level.stairs_locked)
+            {
+                glyph_arrow.Show(level.glyph_position);
+            }
+            else
+            {
+                glyph_arrow.Hide();
             }
 
             // Show the contents of the inventory: Weapon name and tier, Armour tier, potion quantity.
@@ -65,7 +82,18 @@ namespace Roguelike.Game
 
             if (game_manager.game_over)
             {
-                death_text.text = "GAME OVER\n" + $"Depth: {level.depth} | Seed: {level.seed}\n" + "Press [R] to restart";
+                RunStats stats = game_manager.run_stats;
+
+                string breakdown = "";
+                foreach (KeyValuePair<string, int> entry in stats.by_name)
+                {
+                    breakdown += $"\n {entry.Key} x{entry.Value}";
+                }
+                
+                death_text.text = "GAME OVER\n" 
+                  + $"Depth: {level.depth} | Seed: {level.seed}\n" 
+                  + $"Kills: {stats.kills}{breakdown}\n"
+                  + "Press [R] to restart";
             }
         }
     }

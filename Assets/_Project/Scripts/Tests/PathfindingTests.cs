@@ -11,7 +11,7 @@ namespace Roguelike.Tests
             var level = new LevelData { map = new DungeonMap(width, height) };
             for (int x = 1; x < width - 1; x++)
             {
-                for (int y = 1; y < height; y++)
+                for (int y = 1; y < height - 1; y++)
                 {
                     level.map.Carve(new Vector2Int(x, y));
                 }

@@ -1,5 +1,6 @@
 using Roguelike.Core;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Rendering.Universal;
 
 namespace Roguelike.Game
@@ -9,6 +10,17 @@ namespace Roguelike.Game
         [SerializeField] SpriteRenderer sprite_renderer;
         [SerializeField] float move_speed = 14f;
         [SerializeField] private Light2D glow;
+        [SerializeField] Image hp_fill;
+        [SerializeField] Image hp_bar_back;
+        
+        // Entitiy's default colour. Stone grey for guardians, white for everything else.
+        Color base_colour = Color.white;
+        // Tint of whatever world we're currently in.
+        Color world_tint = Color.white;
+        
+        // Allowed when we spawn an enemy but not when we spawn the player.
+        // For enemy, always allowed, but only visible when they take damage.
+        private bool health_bar_allowed;
 
         /// <summary>
         /// The key enemy is lit while player is in the mirror world.
@@ -16,6 +28,29 @@ namespace Roguelike.Game
         public void SetGlow(bool on)
         {
             if (glow != null) glow.enabled = on;
+        }
+
+        public void ShowHealthBar(bool on)
+        {
+            health_bar_allowed = on;
+            UpdateHealthBar();
+        }
+
+        /// <summary>
+        /// Bar hidden at full health and appears when enemy is hurt.
+        /// </summary>
+        void UpdateHealthBar()
+        {
+            if (hp_fill == null || hp_bar_back == null) return;
+            
+            bool visible = health_bar_allowed && state != null && state.hp < state.max_hp;
+            hp_fill.enabled = visible;
+            hp_bar_back.enabled = visible;
+
+            if (visible)
+            {
+                hp_fill.fillAmount = Mathf.Clamp01((float)state.hp / state.max_hp);
+            }
         }
         
         public EntityState state { get; private set; }
@@ -42,9 +77,11 @@ namespace Roguelike.Game
                 transform.position, target, move_speed * Time.deltaTime
             );
 
+            UpdateHealthBar();
+
             UpdateSortingOrder();
         }
-
+        
         /// <summary>
         /// Sort entities by height on screen such that entities that are lower are drawn in front.
         /// </summary>
@@ -66,9 +103,21 @@ namespace Roguelike.Game
             }
         }
 
+        public void SetBaseColour(Color colour)
+        {
+            base_colour = colour;
+            Repaint();
+        }
+
         public void SetTint(Color tint)
         {
-            if (sprite_renderer != null) sprite_renderer.color = tint;
+            world_tint = tint;
+            Repaint();
+        }
+
+        void Repaint()
+        {
+            if (sprite_renderer != null) sprite_renderer.color = base_colour * world_tint;
         }
     }
 }
