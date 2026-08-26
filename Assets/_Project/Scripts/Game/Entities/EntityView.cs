@@ -12,6 +12,83 @@ namespace Roguelike.Game
         [SerializeField] private Light2D glow;
         [SerializeField] Image hp_fill;
         [SerializeField] Image hp_bar_back;
+
+        [Header("Idle animation")] 
+        [SerializeField] Sprite[] default_idle_frames;
+        [SerializeField] int idle_frames_per_second = 6;
+        
+        [Tooltip("Sprite is facing right by default")]
+        [SerializeField] bool sprite_faces_right = true;
+        
+        Vector2Int last_known_cell;
+        
+        Sprite[] idle_frames;
+        Sprite standing_sprite;
+        Sprite downed_sprite;
+        private bool showing_downed;
+        float frame_timer;
+        int frame_index;
+        TurnManager turn_manager;
+
+        public void SetDownedSprite(Sprite sprite) => downed_sprite = sprite;
+
+        public void SetTurnManager(TurnManager turn_manager) => this.turn_manager = turn_manager;
+
+        public void SetIdleFrames(Sprite[] frames, int frames_per_second, bool desynchronise = true)
+        {
+            idle_frames = (frames != null && frames.Length > 0) ? frames : null;
+            if (frames_per_second > 0) idle_frames_per_second = frames_per_second;
+            if (idle_frames == null || state == null) return;
+
+            if (desynchronise)
+            {
+                int hash = (state.position.x * 73856093 ^ state.position.y * 19349663) & 0x7fffffff;
+                frame_index = hash % idle_frames.Length;
+                frame_timer = (hash % 16) / 16f / idle_frames_per_second;
+            }
+            
+            ShowFrame(frame_index);
+        }
+
+        bool ShouldIdle()
+        {
+            // Statues shouldn't move
+            if (state.faction == Faction.Petrified) return false;
+            if (state.is_downed) return false;
+            return true;
+        }
+
+        void TickIdle()
+        {
+            if (idle_frames == null || idle_frames.Length < 2) return;
+            if (idle_frames_per_second <= 0f) return;
+
+            if (!ShouldIdle())
+            {
+                if (!state.is_downed && state.faction == Faction.Petrified && frame_index != 0)
+                {
+                    frame_index = 0;
+                    frame_timer = 0f;
+                    ShowFrame(0);
+                }
+
+                return;
+            }
+
+            frame_timer += Time.deltaTime;
+            float frame_duration = 1f / idle_frames_per_second;
+            while (frame_timer >= frame_duration)
+            {
+                frame_timer -= frame_duration;
+                frame_index = (frame_index + 1) % idle_frames.Length;
+                ShowFrame(frame_index);
+            }
+        }
+
+        void ShowFrame(int index)
+        {
+            if (sprite_renderer != null) sprite_renderer.sprite = idle_frames[index];
+        }
         
         // Entitiy's default colour. Stone grey for guardians, white for everything else.
         Color base_colour = Color.white;
@@ -59,7 +136,35 @@ namespace Roguelike.Game
         {
             this.state = state;
             transform.position = CellToWorld(state.position);
+            last_known_cell = state.position;
             UpdateSortingOrder();
+
+            if (default_idle_frames != null && default_idle_frames.Length > 0)
+            {
+                SetIdleFrames(default_idle_frames, idle_frames_per_second, desynchronise: false);
+            }
+        }
+
+        /// <summary>
+        /// Face whichever way we last moved horizontally
+        /// </summary>
+        void UpdateFacing()
+        {
+            if (state.position == last_known_cell) return;
+
+            int dx = state.position.x - last_known_cell.x;
+            last_known_cell = state.position;
+
+            if (dx == 0) return;
+            // We don't want statues to flip when they're pushed.
+            if (state.faction == Faction.Petrified || state.is_downed) return;
+
+            bool facing_left = dx < 0;
+            // flipX mirrors the artwork along the Y axis.
+            if (sprite_renderer != null)
+            {
+                sprite_renderer.flipX = (facing_left == sprite_faces_right);
+            }
         }
 
         public void Update()
@@ -78,7 +183,9 @@ namespace Roguelike.Game
             );
 
             UpdateHealthBar();
-
+            UpdateDowned();
+            TickIdle();
+            UpdateFacing();
             UpdateSortingOrder();
         }
         
@@ -97,10 +204,27 @@ namespace Roguelike.Game
 
         public void SetSprite(Sprite sprite)
         {
-            if (sprite_renderer != null && sprite != null)
+            if (sprite == null) return;
+            standing_sprite = sprite;
+            if (sprite_renderer != null) sprite_renderer.sprite = sprite;
+        }
+
+        void UpdateDowned()
+        {
+            if (state.is_downed == showing_downed) return;
+            showing_downed = state.is_downed;
+
+            if (showing_downed)
             {
-                sprite_renderer.sprite = sprite;
+                if (downed_sprite != null && sprite_renderer != null) sprite_renderer.sprite = downed_sprite;
+                return;
             }
+
+            frame_index = 0;
+            frame_timer = 0f;
+            
+            if (idle_frames != null && sprite_renderer != null) sprite_renderer.sprite = downed_sprite;
+            else if (standing_sprite != null && sprite_renderer != null) sprite_renderer.sprite = standing_sprite;
         }
 
         public void SetBaseColour(Color colour)

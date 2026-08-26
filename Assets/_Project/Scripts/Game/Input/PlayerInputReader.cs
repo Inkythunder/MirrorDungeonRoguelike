@@ -96,5 +96,13 @@ namespace Roguelike.Game
 
             return Vector2Int.zero;
         }
+
+        public bool DebugToggleRequested()
+        {
+            Keyboard keyboard = Keyboard.current;
+            
+            // Hold F3 and tap G. This is to prevent accidental key presses opening debug mode.
+            return keyboard.f3Key.isPressed && keyboard.gKey.wasPressedThisFrame;
+        }
     }
 }

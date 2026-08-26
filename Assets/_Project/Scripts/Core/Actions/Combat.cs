@@ -18,10 +18,9 @@ namespace Roguelike.Core
             level.Log($"{attacker.name} hits {defender.name} for {damage}");
             level.ReportDamage(defender.position, damage);
 
-            if (defender.is_key && !defender.IsAlive)
+            if (!defender.IsAlive && defender.downed_duration > 0)
             {
-                defender.hp = defender.max_hp;
-                level.Log($"{defender.name} refuses to die...");
+                KnockDown.Strike(defender, level);
                 return ActionResult.Attacked;
             }
 

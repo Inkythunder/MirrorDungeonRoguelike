@@ -30,7 +30,7 @@ namespace Roguelike.Core
             if (occupant != null)
             {
                 // If the target is a statue, we want to push it, not attack.
-                if (occupant.faction == Faction.Petrified)
+                if (occupant.faction == Faction.Petrified || occupant.is_downed)
                 {
                     // Only the player can shove a statue.
                     if (actor.faction != Faction.Player) return ActionResult.Blocked;
@@ -49,7 +49,7 @@ namespace Roguelike.Core
                         return ActionResult.Blocked;
                     }
                     level.MoveEntity(occupant, beyond);
-                    level.Log("You push the statue.");
+                    level.Log(occupant.is_downed ? "You shove {occupant.name} aside." : "You push the statue.");
                     level.CheckGlyph();
                     return ActionResult.Pushed;
                 }

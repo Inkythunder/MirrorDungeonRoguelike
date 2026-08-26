@@ -31,6 +31,11 @@ namespace Roguelike.Core
         public EnemyBehaviour behaviour = EnemyBehaviour.Wanderer;
         public int aggro_range = 8;
         public bool is_key = false;
+
+        // ----- Knock Down -----
+        public int downed_duration;
+        public int downed_turns;
+        public bool is_downed => downed_turns > 0;
     }
 }
 

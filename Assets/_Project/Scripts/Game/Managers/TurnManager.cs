@@ -77,6 +77,7 @@ namespace Roguelike.Game
             turn_count++;
             // Putting 'Tick' here means the guardians don't move on the same turn they wake.
             Guardians.Tick(level);
+            KnockDown.Tick(level);
 
             if (!level.player.IsAlive)
             {
@@ -93,7 +94,7 @@ namespace Roguelike.Game
             // One flood fill for the whole level before any movement.
             // Every enemy reads the same map for efficiency
             field.Rebuild(level.player.position);
-            
+
             acting_buffer.Clear();
             foreach (EntityState entity in level._all_entities)
             {
@@ -107,6 +108,8 @@ namespace Roguelike.Game
             {
                 // In case killed earlier on this turn
                 if (!enemy.IsAlive) continue;
+                // Knocked down enemies can't act until they get up
+                if (enemy.is_downed) continue;
                 // Stop if player is dead
                 if (!level.player.IsAlive) continue;
 

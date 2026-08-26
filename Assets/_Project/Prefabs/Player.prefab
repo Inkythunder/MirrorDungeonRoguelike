@@ -106,3 +106,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Roguelike.Core::Roguelike.Game.EntityView
   sprite_renderer: {fileID: 5790547324706827161}
   move_speed: 14
+  glow: {fileID: 0}
+  hp_fill: {fileID: 0}
+  hp_bar_back: {fileID: 0}
+  default_idle_frames:
+  - {fileID: 6703721768816422164, guid: 4fafba7fc3dcc8212b111c5bf829c001, type: 3}
+  - {fileID: 1480366189844070803, guid: 4fafba7fc3dcc8212b111c5bf829c001, type: 3}
+  - {fileID: -8705335424438938360, guid: 4fafba7fc3dcc8212b111c5bf829c001, type: 3}
+  - {fileID: -1838782379550794613, guid: 4fafba7fc3dcc8212b111c5bf829c001, type: 3}
+  idle_frames_per_second: 6

@@ -6,8 +6,15 @@ namespace Roguelike.Game
     [CreateAssetMenu(menuName = "Enemy Definition", fileName = "Enemy")]
     public class EnemyDefinition : ScriptableObject
     {
-        public string display_name = "lil guy";
+        public string display_name = "namen't";
         public Sprite sprite;
+        
+        [Header("Idle animation")]
+        [Tooltip("Frames of idle cycle in order. Leave empty to use single sprite.")]
+        public Sprite[] idle_frames;
+
+        [Tooltip("Frames per second for the idle animation.")]
+        public int idle_frames_per_second = 6;
 
         public EnemyBehaviour behaviour = EnemyBehaviour.Wanderer;
 
@@ -20,6 +27,13 @@ namespace Roguelike.Game
         [Tooltip("This enemy is a guardian of the mirror world.")]
         public bool is_guardian = false;
         
+        [Header("Knock down")]
+        [Tooltip("Turns spent knocked down instead of dying. 0 means they die normally.")]
+        [SerializeField] public int downed_duration = 0;
+
+        [Tooltip("Sprite shown while knocked down:")] 
+        [SerializeField] public Sprite downed_sprite;
+        
         [Tooltip("Enemy will never appear on level shallower than this.")]
         public int minimum_depth = 1;
 
@@ -30,7 +44,7 @@ namespace Roguelike.Game
         public Color tint = Color.white;
 
         public int max_for_depth(int depth) => max_per_level * depth;
-
+        
         public EntityState CreateEntity(Vector2Int position, int depth)
         {
             int hp_bonus = (depth - 1) / 2;
@@ -48,7 +62,8 @@ namespace Roguelike.Game
                 behaviour = this.behaviour,
                 aggro_range = this.aggro_range,
                 is_key = this.is_key,
-                is_guardian = this.is_guardian
+                is_guardian = this.is_guardian,
+                downed_duration = this.downed_duration
             };
         }
     }

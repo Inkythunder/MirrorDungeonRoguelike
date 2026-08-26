@@ -14,6 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Roguelike.Game::Roguelike.Core.EnemyDefinition
   display_name: lil guy
   sprite: {fileID: 1730889299519279947, guid: 4fafba7fc3dcc8212b111c5bf829c001, type: 3}
+  idle_frames:
+  - {fileID: 1730889299519279947, guid: 4fafba7fc3dcc8212b111c5bf829c001, type: 3}
+  - {fileID: -1143173064917871634, guid: 4fafba7fc3dcc8212b111c5bf829c001, type: 3}
+  - {fileID: 1396376321, guid: 4fafba7fc3dcc8212b111c5bf829c001, type: 3}
+  - {fileID: 300552163, guid: 4fafba7fc3dcc8212b111c5bf829c001, type: 3}
+  idle_frames_per_second: 6
   behaviour: 0
   max_hp: 5
   attack: 2
@@ -23,3 +29,4 @@ MonoBehaviour:
   is_guardian: 0
   minimum_depth: 1
   max_per_level: 3
+  tint: {r: 1, g: 1, b: 1, a: 1}

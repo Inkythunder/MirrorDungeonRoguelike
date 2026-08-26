@@ -14,6 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Roguelike.Game::Roguelike.Game.EnemyDefinition
   display_name: Guardian
   sprite: {fileID: 1472601363, guid: 4fafba7fc3dcc8212b111c5bf829c001, type: 3}
+  idle_frames:
+  - {fileID: 1472601363, guid: 4fafba7fc3dcc8212b111c5bf829c001, type: 3}
+  - {fileID: 1706472323, guid: 4fafba7fc3dcc8212b111c5bf829c001, type: 3}
+  - {fileID: 1664615327, guid: 4fafba7fc3dcc8212b111c5bf829c001, type: 3}
+  - {fileID: 1615820398, guid: 4fafba7fc3dcc8212b111c5bf829c001, type: 3}
+  idle_frames_per_second: 6
   behaviour: 1
   max_hp: 100
   attack: 10

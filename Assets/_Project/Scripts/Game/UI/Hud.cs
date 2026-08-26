@@ -26,6 +26,8 @@ namespace Roguelike.Game
 
         private void LateUpdate()
         {
+            debug_text.gameObject.SetActive(DebugMode.enabled);
+            
             LevelData level = game_manager.level;
             if (level == null || level.player == null) return;
 
@@ -53,8 +55,8 @@ namespace Roguelike.Game
             else if (player.position == level.stairs_position)
             {
                 depth_text.text = level.stairs_locked
-                    ? $"Depth {level.depth} | [E] to descend"
-                    : $"Depth {level.depth} | Sealed - find the glyph";
+                    ? $"Depth {level.depth} | Sealed - find the glyph"
+                    : $"Depth {level.depth} | [E] to descend";
             }
             else
             {
@@ -75,7 +77,14 @@ namespace Roguelike.Game
                 $"WPN: {player.weapon_name} | ATK: {player.total_attack} | DEF: {player.total_defence} | POTIONS: {player.potions}";
 
             // Show the seed and turn count only in debug mode.
-            debug_text.text = $"Seed: {level.seed} | Turn count {turn_manager.turn_count}";
+            if (DebugMode.enabled)
+            {
+                EntityState hostile_count_source = null;
+                debug_text.text = 
+                    $"Seed: {level.seed} | Turn count {turn_manager.turn_count}\n"
+                    + $"Pos: {player.position.x}, {player.position.y} | World: {(level.in_mirror_world ? "MIRROR" : "PRIMARY")}\n"
+                    + $"Mirror turns: {level.mirror_turns} | Guardians awake: {level.guardians_awakened}\n";
+            }
             
             // Show the death panel based on the game_over state.
             death_panel.SetActive(game_manager.game_over);

@@ -61,8 +61,14 @@ namespace Roguelike.Game
         void Update()
         {
             Keyboard keyboard = Keyboard.current;
-
             if (keyboard == null) return;
+
+            if (input_reader.DebugToggleRequested())
+            {
+                DebugMode.enabled = !DebugMode.enabled;
+                message_log.gameObject.SetActive(true);
+            }
+            
             if (game_over)
             {
                 if (keyboard.rKey.wasPressedThisFrame)
@@ -291,6 +297,8 @@ namespace Roguelike.Game
 
             EntityView view = SpawnView(enemy_prefab, enemy);
             view.SetSprite(definition.sprite);
+            view.SetIdleFrames(definition.idle_frames, definition.idle_frames_per_second);
+            view.SetDownedSprite(definition.downed_sprite);
             view.SetBaseColour(definition.tint);
             view.SetGlow(false);
             view.ShowHealthBar(true);
@@ -365,6 +373,7 @@ namespace Roguelike.Game
         EntityView SpawnView(EntityView prefab, EntityState state)
         {
             EntityView view = Instantiate(prefab, entity_root);
+            view.SetTurnManager(turn_manager);
             view.SetTint(world_tint);
             view.Bind(state);
             view.name = state.name;
