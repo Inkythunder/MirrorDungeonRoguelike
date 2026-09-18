@@ -106,6 +106,10 @@ InitTestScene*.unity*
 /[Aa]ssets/[Ss]ceneDependencyCache*
 
 .idea
-*.md
 *.pdf
 *.odt
+*.so
+*.so.*
+.~lock*
+/build_*
+*DebugInformation_DoNotShip/

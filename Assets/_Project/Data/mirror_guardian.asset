@@ -27,6 +27,8 @@ MonoBehaviour:
   aggro_range: 999
   is_key: 0
   is_guardian: 1
+  downed_duration: 0
+  downed_sprite: {fileID: 0}
   minimum_depth: 1
   max_per_level: 1
   tint: {r: 0.6, g: 0.65, b: 0.7, a: 1}

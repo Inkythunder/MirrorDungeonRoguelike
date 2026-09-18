@@ -244,7 +244,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 16, y: 16}
-  m_SizeDelta: {x: 512, y: 18}
+  m_SizeDelta: {x: 512, y: 24}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &143729237
 MonoBehaviour:
@@ -293,8 +293,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
-  m_fontSizeBase: 18
+  m_fontSize: 22
+  m_fontSizeBase: 22
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1038,7 +1038,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: New Text
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 54425e7810064af4d8108afdd4705979, type: 2}
   m_sharedMaterial: {fileID: -608210724140953398, guid: 54425e7810064af4d8108afdd4705979, type: 2}
@@ -1479,12 +1479,12 @@ MonoBehaviour:
   guardian_definition: {fileID: 11400000, guid: 1877d9ce22ff29fb3a34cf9e201bafc3, type: 2}
   generation_settings:
     width: 32
-    height: 24
+    height: 32
     minimum_partition_size: 6
     maximum_depth: 4
     room_margin: 1
-    walk_iterations: 10
-    walk_length: 25
+    walk_iterations: 14
+    walk_length: 15
     minimum_room_fill: 0.45
     corridor_width: 1
   difficulty_settings:
