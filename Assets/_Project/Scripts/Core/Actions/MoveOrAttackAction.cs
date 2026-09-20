@@ -49,7 +49,7 @@ namespace Roguelike.Core
                         return ActionResult.Blocked;
                     }
                     level.MoveEntity(occupant, beyond);
-                    level.Log(occupant.is_downed ? "You shove {occupant.name} aside." : "You push the statue.");
+                    level.Log(occupant.is_downed ? $"You shove {occupant.name} aside." : "You push the statue.");
                     level.CheckGlyph();
                     return ActionResult.Pushed;
                 }

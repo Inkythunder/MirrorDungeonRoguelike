@@ -35,6 +35,24 @@ the player for spending too long in there.
 player of events such as damage taken, or enemy killed. Damage numbers are displayed above any entity that 
 takes damage. Enemies display health bars to allow the player to keep track of who's taken damage so far.
 
+## Requirements
+- **Unity 6000.3.21f1** (Unity 6.3)
+
+## How to run the game
+- ### In the editor
+
+1. Clone the repository: `git clone https://github.com/Inkythunder/MirrorDungeonRoguelike`.
+2. In Unity Hub, click **Add -> Add project from disk** and select MirrorDungeonRoguelike.
+3. Open the project.
+4. In the Project window, open `Assets/_Project/Scenes/MainMenu.unity`.
+5. Press **Play**.
+ 
+- ### As an executable
+
+1. Go to **File -> Build Profiles**
+2. Check that both scenes `MainMenu` and `Game` are already included in the build list.
+3. Select the target platform and click **Build**.
+
 ## How to Play
 
 **Objective**: The aim of the game is to descend as far as possible in the dungeon and see how far you can make it.
@@ -42,13 +60,17 @@ The exit starts locked and must be unlocked by placing the key carrier on the gl
 found by entering the mirror world where an arrow will guide the player to a glowing enemy. This is the key carrier.
 
 ### Controls:
-| Key             | Action        |
-|-----------------|---------------|
-| `↑` `←` `↓` `→` | Move          |
-| `Q`             | Switch Worlds |
-| `1`             | Potion        |
-| `Space`         | Wait          |
-| `F3 + G`        | Debug Mode    |
+| Key             | Action              |
+|-----------------|---------------------|
+| `↑` `←` `↓` `→` | Move                |
+| `W` `A` `S` `D` | Move                |
+| `Q`             | Switch Worlds       |
+| `1`             | Potion              |
+| `Space`         | Wait                |
+| `E`             | Descend             |
+| `R`             | Restart after death |
+| `F3 + G`        | Debug Mode          |
+| `F5`            | Regenerate level    |
 
 **Mirror world**: Switching to the mirror world causes all enemies from the real world to turn to stone. They will not move unless
 pushed by the player and they cannot harm the player while they are statues. In the mirror world, the glyph
@@ -73,4 +95,5 @@ This will display data about the game including:
 
 | Asset | Author | Source | License | Obtained |
 |---|---|---|---|---|
-| DungeonTileset II | 0x72 | https://0x72.itch.io/dungeontileset-ii | CC0 | 2026-05-02 |
+| DungeonTileset II | 0x72           | https://0x72.itch.io/dungeontileset-ii     | CC0 | 2026-05-02 |
+| Pixel Operator    | Jayvee Enaguas | https://www.dafont.com/pixel-operator.font | CC0 | 2026-08-26 |
